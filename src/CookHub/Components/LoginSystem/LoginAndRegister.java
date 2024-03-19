@@ -23,8 +23,11 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
+import CookHub.Controller.AddUserController;
+
 public class LoginAndRegister extends javax.swing.JFrame {
 
+    private AddUserController addUserController;
     private MigLayout layout;
     private PanelCover cover;
     private PanelLoginAndRegister loginAndRegister;
@@ -114,10 +117,12 @@ public class LoginAndRegister extends javax.swing.JFrame {
        });
        }
     private void register() {
-        ModelUser user = loginAndRegister.getUser();
-        showMessage(Message.MessageType.SUCCESS, "Test Message");
+        ModelUser user = new ModelUser();
+        
+        
+//        showMessage(Message.MessageType.SUCCESS, "User Added");
     }
-    private void showMessage(Message.MessageType messageType, String message){
+    public void showMessage(Message.MessageType messageType, String message){
         Message ms = new Message();
         ms.showMessage(messageType, message);
         TimingTarget target = new TimingTargetAdapter(){

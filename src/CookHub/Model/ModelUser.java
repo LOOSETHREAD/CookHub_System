@@ -13,16 +13,12 @@ public class ModelUser {
     /**
      * @return the userID
      */
-    public int getUserID() {
-        return userID;
-    }
+   
 
     /**
      * @param userID the userID to set
      */
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
+    
 
     /**
      * @return the userName
@@ -55,14 +51,14 @@ public class ModelUser {
     /**
      * @return the password
      */
-    public String getPassword() {
+    public char[] getPassword() {
         return password;
     }
 
     /**
      * @param password the password to set
      */
-    public void setPassword(String password) {
+    public void setPassword(char[] password) {
         this.password = password;
     }
 
@@ -80,15 +76,15 @@ public class ModelUser {
         this.verifyCode = verifyCode;
     }
 
-    public ModelUser(int userID, String userName, String email, String password, String verifyCode) {
-        this.userID = userID;
+    public ModelUser( String userName, String email, char[] password, String verifyCode) {
+        
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.verifyCode = verifyCode;
     }
-    public ModelUser(int userID, String userName, String email, String password) {
-        this.userID = userID;
+    public ModelUser( String userName, String email, char[] password) {
+       
         this.userName = userName;
         this.email = email;
         this.password = password;
@@ -97,9 +93,9 @@ public class ModelUser {
     public ModelUser() {
     }
     
-    private int userID;
+    
     private String userName;
     private String email;
-    private String password;
+    private char[] password;
     private String verifyCode;
 }
