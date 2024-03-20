@@ -22,16 +22,31 @@ public class AddUserController {
     public AddUserController(){
 }
     
-    public  boolean addUserToDatabase(ModelUser data) {
+    public  boolean addUserToDatabase(ModelUser data) throws ClassNotFoundException {
     try {
-        String sql = "INSERT INTO userdatabase (userName,PassWord,email)values(?,?,?)";
+        
+        String checkSql = "SELECT COUNT(*) AS count FROM userdatabase";
+        PreparedStatement checkStatement = DatabaseConnection.getInstance().getConnection().prepareStatement(checkSql);
+        ResultSet resultSet = checkStatement.executeQuery();
+        resultSet.next();
+        int rowCount = resultSet.getInt("count");
+        
+        String sql;
+        if (rowCount == 0) {
+            
+            sql = "INSERT INTO userdatabase (userName, PassWord, email, role) VALUES (?, ?, ?, 'ADMIN')";
+        } else {
+           
+            sql = "INSERT INTO userdatabase (userName, PassWord, email, role) VALUES (?, ?, ?, 'USER')";
+        }
+        
         PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
         p.setString(1, data.getUserName());
         p.setString(2, new String(data.getPassword()));
         p.setString(3, data.getEmail());
         p.executeUpdate();
         return true; 
-    } catch (Exception e) {
+    } catch (SQLException e) {
         e.printStackTrace();
         return false; 
     }

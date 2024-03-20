@@ -10,6 +10,14 @@ package CookHub.Model;
  */
 public class ModelUser {
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
     /**
      * @return the userID
      */
@@ -92,10 +100,14 @@ public class ModelUser {
 
     public ModelUser() {
     }
-    
+        public enum UserRole {
+        ADMIN,
+        USER
+    }
     
     private String userName;
     private String email;
     private char[] password;
     private String verifyCode;
+    private UserRole role;
 }

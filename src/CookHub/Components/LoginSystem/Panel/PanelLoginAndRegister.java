@@ -7,6 +7,7 @@ package CookHub.Components.LoginSystem.Panel;
 import CookHub.Controller.AddUserController;
 import CookHub.Controller.userController;
 import CookHub.Main.Main;
+import CookHub.Main.admin;
 import CookHub.Model.ModelUser;
 import CookHub.Swing.Button;
 import CookHub.Swing.MyPasswordField;
@@ -21,7 +22,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
@@ -87,20 +91,22 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-               if (txtUsers.getText().equals("")|| txtEmail.getText().equals("") || txtPass.getPassword().equals("")) {
-                  showMessage(Message.MessageType.ERROR, "Please Fill out Empty Fields!");
+              if (txtUsers.getText().equals("") || txtEmail.getText().equals("") || txtPass.getPassword().equals("")) {
+                 showMessage(Message.MessageType.ERROR, "Please Fill out Empty Fields!");
                 } else {
                     String userName = txtUsers.getText();
-               char[] password = txtPass.getPassword();
-               String email = txtEmail.getText();
-                user = new ModelUser(userName, email, password);
-               userController controller = new userController();
-               controller.registerUser(user);
-               showMessage(Message.MessageType.SUCCESS, "User Added");
+                    char[] password = txtPass.getPassword();
+                    String email = txtEmail.getText();
+                    user = new ModelUser(userName, email, password);
+                    userController controller = new userController();
+                    try {
+                        controller.registerUser(user);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    showMessage(Message.MessageType.SUCCESS, "User Added");
                 }
-                
-               
-                }
+                            }
         });
     }
     private void initLogin(){
@@ -129,33 +135,44 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         cmd.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String userName = txtUsers.getText();
-                char[] password = txtPass.getPassword();
-                if (userName.equals("") || password.equals("")) {
-                showMessage(Message.MessageType.ERROR, "Please Fill out Empty Fields!");
-                } 
-                
-                else {
-                     ModelUser loginUser = new ModelUser(userName, "", password);
+                    String userName = txtUsers.getText();
+                    char[] password = txtPass.getPassword();
 
-                userController controller = new userController();
-                ModelUser loggedInUser = controller.LogIn(loginUser);
-
-                if (loggedInUser != null) {
-                    
-                    if (true) {
-                        
+                    if (userName.equals("") || password.length == 0) {
+                        showMessage(Message.MessageType.ERROR, "Please Fill out Empty Fields!");
                     } else {
-                          Main main = new Main();
-                          main.setVisible(true);
+                        ModelUser loginUser = new ModelUser(userName, "", password);
+                        userController controller = new userController();
+                        ModelUser loggedInUser = controller.LogIn(loginUser);
+
+                        if (loggedInUser != null) {
+                            try {
+                                boolean isAdmin = controller.isAdmin(loggedInUser);
+                                if (isAdmin) {
+                                    Component topLevelContainer = PanelLoginAndRegister.this.getTopLevelAncestor();
+                                    if (topLevelContainer instanceof JFrame) {
+                                        ((JFrame) topLevelContainer).setVisible(false);
+                                    }
+                                    admin adminInterface = new admin();
+                                    adminInterface.setVisible(true);
+                                } else {
+                                    Component topLevelContainer = PanelLoginAndRegister.this.getTopLevelAncestor();
+                                    if (topLevelContainer instanceof JFrame) {
+                                        ((JFrame) topLevelContainer).setVisible(false);
+                                    }
+                                    Main main = new Main();
+                                    main.setVisible(true);
+                                }
+                            } catch (ClassNotFoundException ex) {
+                                Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            showMessage(Message.MessageType.ERROR, "Incorrect User or Password");
+                        }
                     }
-           
-                } else {
-           
-                showMessage(Message.MessageType.ERROR, "Incorrect User or Password");
-        }
-                }
+
                  }
+            
         });
          
     }
