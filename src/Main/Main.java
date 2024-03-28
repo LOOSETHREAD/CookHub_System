@@ -24,7 +24,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
 
 /**
@@ -60,10 +63,37 @@ public class Main extends javax.swing.JFrame {
          dishRequest.setText("");
      }
      public void requestAdd() throws IOException{
-         datamodel newdata = new datamodel(dishRequest.getText());
+//         datamodel newdata = new datamodel(dishRequest.getText());
+           datamodel newdata = new datamodel();
+           newdata.setUserName(userName.getText());
+           newdata.setDishRequest(dishRequest.getText());
+         
          controller.requestDishToDatabase(newdata);
      }
-    
+       public void ExistingUserRequest(){
+        
+        try {
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date currentDate = new Date();
+            java.sql.Date sqlDate = new java.sql.Date(currentDate.getTime());
+  
+            String sql = "SELECT * FROM requestform WHERE UserName = ? and DateCreated = ?;";
+            PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
+            p.setString(1, userName.getText());
+            p.setDate(2, sqlDate);
+            ResultSet rs = p.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(this, "You have only 1 request per day");
+            }else{
+                requestAdd();
+            }
+         
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -90,6 +120,8 @@ public class Main extends javax.swing.JFrame {
         dishIngredients = new javax.swing.JTextPane();
         jScrollPane7 = new javax.swing.JScrollPane();
         dishCost = new javax.swing.JTextPane();
+        userName = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -274,6 +306,10 @@ public class Main extends javax.swing.JFrame {
         dishCost.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane7.setViewportView(dishCost);
 
+        userName.setText("Username");
+
+        jLabel1.setText("WELCOME: ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -292,23 +328,32 @@ public class Main extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(123, 123, 123)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(userName, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(213, Short.MAX_VALUE))))
+                        .addContainerGap(193, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(userName)
+                            .addComponent(jLabel1))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -450,12 +495,8 @@ public class Main extends javax.swing.JFrame {
     private void dishRequestKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dishRequestKeyPressed
         // TODO add your handling code here:
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            try {
-                requestAdd();
-                setDishRequestEmpty();
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ExistingUserRequest();
+            setDishRequestEmpty();
         }
     }//GEN-LAST:event_dishRequestKeyPressed
 
@@ -516,6 +557,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel dishName;
     private javax.swing.JTextPane dishProcedure;
     private Swing.MyTextField dishRequest;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -529,5 +571,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTable mainTable;
     private components.PanelCover panelCover1;
     private components.PictureBox pictureBox1;
+    public javax.swing.JLabel userName;
     // End of variables declaration//GEN-END:variables
 }

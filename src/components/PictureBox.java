@@ -30,17 +30,17 @@ public class PictureBox extends JLayeredPane{
 
     @Override
     protected void paintComponent(Graphics grphcs) {
-    if (image != null) {
+     if (image != null) {
         Graphics2D g2 = (Graphics2D) grphcs;
         g2.setColor(getBackground());
         g2.fillRect(0, 0, getWidth(), getHeight());
-        
+
         Rectangle size = getAutoSize(image);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(toImage(image), size.getLocation().x, size.getLocation().y, size.getSize().width,size.getSize().height, null);
     }
     super.paintComponent(grphcs);
-    }
+}
 
     private Rectangle getAutoSize(Icon image) {
     int w = getWidth();

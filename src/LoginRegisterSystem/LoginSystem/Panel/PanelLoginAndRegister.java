@@ -143,12 +143,6 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         cmdShowPassword.setFont(new Font("sansserif", 1, 12));
         cmdShowPassword.setCursor(new Cursor(Cursor.HAND_CURSOR));
         login.add(cmdShowPassword,"w 60%");
-        JButton cmdForget = new JButton("Forgot your password ?");
-        cmdForget.setForeground(new Color(100, 100, 100));
-        cmdForget.setFont(new Font("sansserif", 1, 12));
-        cmdForget.setContentAreaFilled(false);
-        cmdForget.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        login.add(cmdForget);
         Button cmd = new Button();
         cmd.setBackground(new Color(255, 175, 91));
         cmd.setForeground(new Color(250,250,250));
@@ -183,6 +177,8 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                                         ((JFrame) topLevelContainer).setVisible(false);
                                     }
                                     Main main = new Main();
+                                  String usernameData =  loggedInUser.getUserName();
+                                  main.userName.setText(usernameData);
                                     main.setVisible(true);
                                 }
                             } catch (ClassNotFoundException ex) {

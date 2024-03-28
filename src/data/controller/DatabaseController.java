@@ -27,6 +27,7 @@ private DefaultTableModel tableModel;
 
     
     public void addDataToDatabase(datamodel addData) throws IOException{
+        
         try {
             String sql = "INSERT INTO dishtable (Name, Type, Level, Description, Ingredients, Procedures, Cost, Image) VALUES (?,?,?,?,?,?,?,?)";
             
@@ -142,12 +143,14 @@ private DefaultTableModel tableModel;
             }
         }
     }
+ 
     public void requestDishToDatabase(datamodel requestform){
         try {
-             String sql = "INSERT INTO requestform (Request) VALUES (?)";
-             p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
-             p.setString(1, (String) requestform.getDishRequest());
-             int rowsAffected = p.executeUpdate();
+             String sql = "INSERT INTO requestform (Request, UserName, DateCreated) VALUES (?, ?, NOW())";
+         p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
+         p.setString(1, (String) requestform.getDishRequest());
+         p.setString(2, (String) requestform.getUserName());
+         int rowsAffected = p.executeUpdate();
             
             if (rowsAffected > 0) {
                 Object[] rowData = {requestform.getDishRequest()};

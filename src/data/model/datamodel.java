@@ -20,6 +20,20 @@ import javax.swing.Icon;
 public class datamodel {
 
     /**
+     * @return the userName
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * @param userName the userName to set
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    /**
      * @return the dishRequest
      */
     public String getDishRequest() {
@@ -123,9 +137,10 @@ public class datamodel {
         this.dishType = dishType;
         this.dishCover = dishCover;
     }
-    public datamodel(String dishRequest){
-        this.dishRequest = dishRequest;
+
+    public datamodel() {
     }
+  
     private byte[] convertImageIconToByteArray(Icon icon) throws IOException {
     BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
     icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
@@ -136,40 +151,40 @@ public class datamodel {
     return outputStream.toByteArray();
 }
     
-     public void addBookToDatabase() throws SQLException, IOException, ClassNotFoundException {
-    Icon picIcon = dishCover;
-    byte[] imageBytes = convertImageIconToByteArray(picIcon);
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+//     public void addImageToDatabase() throws SQLException, IOException, ClassNotFoundException {
+//    Icon picIcon = dishCover;
+//    byte[] imageBytes = convertImageIconToByteArray(picIcon);
+//    ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+//
+//  
+//    
+//    try (
+//            PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(
+//            "INSERT INTO dishtable (Name, Type, Level, Description, Ingredients, Procedures, Cost, Image) VALUES (?,?,?,?,?,?,?,?)")) {
+//        
+//      
+////        p.setString(1, name);
+////        p.setString(2, dishType);
+////        p.setString(3, dishLevel);
+////        p.setString(4, dishDescription);
+////        p.setString(5, dishIngredients);
+////        p.setString(6, dishProcedures);
+////        p.setString(7, dishCost);
+//        p.setBlob(8, inputStream);
+//       
+//      
+//        p.execute();
+//
+//    }finally {
+//        inputStream.close();
+//    }
+//    
+//}
 
-  
     
-    try (
-            PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(
-            "INSERT INTO dishtable (Name, Type, Level, Description, Ingredients, Procedures, Cost, Image) VALUES (?,?,?,?,?,?,?,?)")) {
+    
         
-      
-        p.setString(1, name);
-        p.setString(2, dishType);
-        p.setString(3, dishLevel);
-        p.setString(4, dishDescription);
-        p.setString(5, dishIngredients);
-        p.setString(6, dishProcedures);
-        p.setString(7, dishCost);
-        p.setBlob(8, inputStream);
-       
-      
-        p.execute();
-
-    }finally {
-        inputStream.close();
-    }
-    
-}
-
-    
-    
-        
-    
+    private String userName;
     private String name;
     private String dishDescription;
     private String dishIngredients;
