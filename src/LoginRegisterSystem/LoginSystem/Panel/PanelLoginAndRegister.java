@@ -110,6 +110,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                         Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     showMessage(Message.MessageType.SUCCESS, "User Added");
+                    
                 }
                             }
         });
