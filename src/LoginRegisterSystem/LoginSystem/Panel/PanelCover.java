@@ -26,7 +26,7 @@ public class PanelCover extends javax.swing.JPanel {
      */
     private final DecimalFormat df = new DecimalFormat("##0.###");
     private ActionListener event;
-    private MigLayout layout;
+    private final MigLayout layout;
     private JLabel name;
     private JLabel title;
     private JLabel description;
@@ -41,7 +41,7 @@ public class PanelCover extends javax.swing.JPanel {
         setLayout(layout);
         init();
     }
-    private void init(){
+    public void init(){
         name = new JLabel("Cook Hub");
         name.setFont(new Font("sansserif",1 , 40));
         name.setForeground(new Color(245,245,245));
@@ -111,7 +111,7 @@ public class PanelCover extends javax.swing.JPanel {
        layout.setComponentConstraints(description, "pad 0 " + v + "% 0 0" + v + "%");
        layout.setComponentConstraints(description1, "pad 0 " + v + "% 0 0" + v + "%");
    }
-    private void login(boolean login){
+    public void login(boolean login){
         if(this.isLogin != login){
             if(login){
                 name.setText("Cook Hub");

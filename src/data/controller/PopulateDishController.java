@@ -6,16 +6,13 @@ package data.controller;
 
 import Admin.Admin;
 import Main.Main;
-import data.database.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class PopulateDishController {
@@ -27,7 +24,7 @@ public class PopulateDishController {
     public static void populateTable(String query, JTable table) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user", "CookHubSystem", "Kirkely123");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/cookhub", "root", "root");
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
 
@@ -59,7 +56,7 @@ public class PopulateDishController {
     public static void populateTable1(String query, JTable table) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user", "CookHubSystem", "Kirkely123");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/cookhub", "root", "root");
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             DefaultTableModel model = (DefaultTableModel) table.getModel();

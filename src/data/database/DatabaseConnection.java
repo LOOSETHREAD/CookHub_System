@@ -32,9 +32,9 @@ public class DatabaseConnection {
     private void ConnectToDatabase() throws SQLException, ClassNotFoundException {
         String server = "127.0.0.1";
         String port = "3306";
-        String database ="user";
-        String user = "CookHubSystem";
-        String password = "Kirkely123";
+        String database ="cookhub";
+        String user = "root";
+        String password = "root";
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://"+server+":"+port+"/"+database,user,password);
     }

@@ -45,6 +45,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     }
 
     private ModelUser user;
+    private PanelCover cover;
     private AddUserController addcontroller;
     public void showMessage(Message.MessageType messageType, String message) {
     
@@ -62,9 +63,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         register.setVisible(true);
        
     }
-    public PanelLoginAndRegister() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    public PanelLoginAndRegister() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
     private void initRegister(ActionListener eventRegister){
         register.setLayout(new MigLayout("wrap","push[center]push","push[]25[]10[]10[]5[]25[]push"));
         JLabel label = new JLabel("Create Account");
@@ -106,6 +107,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                     userController controller = new userController();
                     try {
                         controller.registerUser(user);
+                        
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
                     }
