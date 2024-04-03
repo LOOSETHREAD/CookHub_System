@@ -59,6 +59,15 @@ public class Admin extends javax.swing.JFrame {
         fourthData.setText("");
         dishCover.setImage(icon);
         dishCover.repaint();
+        nameData1.setText("");
+        typeData1.setText("");
+        levelData1.setText("");
+        firstData1.setText("");
+        secondData1.setText("");
+        thirdData1.setText("");
+        fourthData1.setText("");
+        dishCover1.setImage(icon);
+        dishCover1.repaint();
     }
     private void populateRequestForm(){
         try {
@@ -81,14 +90,14 @@ public class Admin extends javax.swing.JFrame {
         }
     }
     public void addDataBtn(){
-        Icon picIcon = dishCover.getImage();
+        Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         try {
             imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
         
-        datamodel newdata = new datamodel(nameData.getText(),typeData.getText(),levelData.getText(),firstData.getText(), secondData.getText(),thirdData.getText(),fourthData.getText(), new ImageIcon(imageBytes));
+        datamodel newdata = new datamodel(nameData1.getText(),typeData1.getText(),levelData1.getText(),firstData1.getText(), secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
         controller.addDataToDatabase(newdata);
-        
+        refreshAdminTable();
         setTextFieldEmpty();
         } catch (IOException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,10 +141,10 @@ public class Admin extends javax.swing.JFrame {
     }
 }
     public void deleteDataBtn(){
-        Icon picIcon = dishCover.getImage();
+        Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-        datamodel newdata = new datamodel(nameData.getText(), typeData.getText(), levelData.getText(), firstData.getText(),secondData.getText(),thirdData.getText(),fourthData.getText(), new ImageIcon(imageBytes));
+        datamodel newdata = new datamodel(nameData1.getText(), typeData1.getText(), levelData1.getText(), firstData1.getText(),secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
         controller.deleteDataToDatabase(newdata);
         refreshAdminTable();
         setTextFieldEmpty();
@@ -144,11 +153,11 @@ public class Admin extends javax.swing.JFrame {
     
     
     public void updateDataBtn() throws IOException{
-         Icon picIcon = dishCover.getImage();
+         Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         int idData = Integer.parseInt(recipeId.getText());
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-        datamodel newdata = new datamodel(nameData.getText(), typeData.getText(), levelData.getText(), firstData.getText(),secondData.getText(),thirdData.getText(),fourthData.getText(), new ImageIcon(imageBytes));
+         datamodel newdata = new datamodel(nameData1.getText(), typeData1.getText(), levelData1.getText(), firstData1.getText(),secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
         controller.updateDataToDatabase(newdata,idData);
         refreshAdminTable();
         setTextFieldEmpty();
@@ -283,7 +292,7 @@ public class Admin extends javax.swing.JFrame {
                 button1ActionPerformed(evt);
             }
         });
-        panelCover2.add(button1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 330, 93, -1));
+        panelCover2.add(button1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 330, 130, 40));
         panelCover2.add(recipeId, new org.netbeans.lib.awtextra.AbsoluteConstraints(203, 862, 27, 32));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -786,7 +795,7 @@ public class Admin extends javax.swing.JFrame {
                 showDishBtnActionPerformed(evt);
             }
         });
-        panelCover2.add(showDishBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 130, -1));
+        panelCover2.add(showDishBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 230, 160, 40));
 
         exitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/exit black.png"))); // NOI18N
         exitButton.addActionListener(new java.awt.event.ActionListener() {
@@ -802,7 +811,7 @@ public class Admin extends javax.swing.JFrame {
                 homeBtnActionPerformed(evt);
             }
         });
-        panelCover2.add(homeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 130, -1));
+        panelCover2.add(homeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, 160, 40));
 
         addDishBtn.setText("Add Dish");
         addDishBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -810,7 +819,7 @@ public class Admin extends javax.swing.JFrame {
                 addDishBtnActionPerformed(evt);
             }
         });
-        panelCover2.add(addDishBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 130, -1));
+        panelCover2.add(addDishBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, 160, 40));
 
         jLayeredPane1.setLayer(panelCover2, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -848,7 +857,7 @@ public class Admin extends javax.swing.JFrame {
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
         // TODO add your handling code here:
         addDataBtn();
-       
+       jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button2ActionPerformed
 
     private void firstDataFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_firstDataFocusGained
@@ -866,6 +875,7 @@ public class Admin extends javax.swing.JFrame {
     private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
         // TODO add your handling code here:
         deleteDataBtn();
+         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button3ActionPerformed
 
     private void button4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button4ActionPerformed
@@ -875,6 +885,7 @@ public class Admin extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
+         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button4ActionPerformed
 
     private void adminTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminTableMouseClicked
