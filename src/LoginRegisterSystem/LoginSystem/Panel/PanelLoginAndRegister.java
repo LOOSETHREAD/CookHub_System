@@ -181,7 +181,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                                     }
                                     Main main = new Main();
                                   String usernameData =  loggedInUser.getUserName();
-                                  main.userName.setText(usernameData);
+                                  main.userName1.setText(usernameData);
                                     main.setVisible(true);
                                 }
                             } catch (ClassNotFoundException ex) {
