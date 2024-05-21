@@ -18,13 +18,7 @@ public class userController {
         data.setPassword(encryptedPassword.toCharArray());
         return DAO.addUserToDatabase(data);
     }
-//    public boolean changePasswordUser(ModelUser data){
-//        String encryptPassword = DAO.encryptPass(new String(data.getNewPassword()));
-//        data.setNewPassword(encryptPassword.toCharArray());
-//        String encryptPasswordv2 = DAO.encryptPass(new String(data.getPassWord()));
-//        data.setPassWord(encryptPasswordv2.toCharArray());       
-//        return DAO.updatePassword(data);
-//    }
+
     public ModelUser LogIn(ModelUser data){
         String encryptedPassword = DAO.encryptPass(new String(data.getPassword()));
         data.setPassword(encryptedPassword.toCharArray());

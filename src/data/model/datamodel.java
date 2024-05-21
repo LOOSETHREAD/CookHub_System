@@ -147,49 +147,24 @@ public class datamodel {
     public datamodel() {
     }
   
-    private byte[] convertImageIconToByteArray(Icon icon) throws IOException {
-    BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-    icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    ImageIO.write(bufferedImage, "png", outputStream);
-
-    return outputStream.toByteArray();
+   public static byte[] convertImageIconToByteArray(Icon icon) {
+    if (icon == null) {
+        return null;
+    }
+    try {
+        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", outputStream);
+        return outputStream.toByteArray();
+    } catch (IOException ex) {
+        // Handle or log the exception
+        ex.printStackTrace();
+        return null;
+    }
 }
-    
-//     public void addImageToDatabase() throws SQLException, IOException, ClassNotFoundException {
-//    Icon picIcon = dishCover;
-//    byte[] imageBytes = convertImageIconToByteArray(picIcon);
-//    ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
-//
-//  
-//    
-//    try (
-//            PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(
-//            "INSERT INTO dishtable (Name, Type, Level, Description, Ingredients, Procedures, Cost, Image) VALUES (?,?,?,?,?,?,?,?)")) {
-//        
-//      
-////        p.setString(1, name);
-////        p.setString(2, dishType);
-////        p.setString(3, dishLevel);
-////        p.setString(4, dishDescription);
-////        p.setString(5, dishIngredients);
-////        p.setString(6, dishProcedures);
-////        p.setString(7, dishCost);
-//        p.setBlob(8, inputStream);
-//       
-//      
-//        p.execute();
-//
-//    }finally {
-//        inputStream.close();
-//    }
-//    
-//}
 
     
-    
-        
     private String userName;
     private String name;
     private String dishDescription;

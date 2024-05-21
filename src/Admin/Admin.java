@@ -3,6 +3,7 @@ package Admin;
 
 import LoginRegisterSystem.LoginSystem.LoginAndRegister;
 import Swing.GlassPanePopup;
+import Swing.ImageIconTableCellRenderer;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mysql.cj.jdbc.Blob;
 import static data.controller.PopulateDishController.populateTable;
@@ -26,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.sql.SQLException;
 import notification.Notification;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 
 
@@ -43,6 +45,9 @@ public class Admin extends javax.swing.JFrame {
 
         controller = new DatabaseController(adminTableModel);
         populateTable("SELECT * FROM dishtable", adminTable);
+        TableColumnModel columnModel = adminTable.getColumnModel();
+        int imageColumnIndex = 0; // Replace 0 with the actual index of your image column
+        columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
     }
 
     public void setTextFieldEmpty(){
@@ -75,6 +80,7 @@ public class Admin extends javax.swing.JFrame {
         
         datamodel newdata = new datamodel(nameData1.getText(),typeData1.getText(),levelData1.getText(),firstData1.getText(), secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
         controller.addDataToDatabase(newdata);
+        
         refreshAdminTable();
         setTextFieldEmpty();
         } catch (IOException ex) {
@@ -332,11 +338,11 @@ public class Admin extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost", "Image"
+                "Image", "No.", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false, false, false
@@ -350,6 +356,7 @@ public class Admin extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        adminTable.setRowHeight(100);
         adminTable.getTableHeader().setReorderingAllowed(false);
         adminTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -358,20 +365,18 @@ public class Admin extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(adminTable);
         if (adminTable.getColumnModel().getColumnCount() > 0) {
-            adminTable.getColumnModel().getColumn(0).setMinWidth(0);
-            adminTable.getColumnModel().getColumn(0).setPreferredWidth(0);
-            adminTable.getColumnModel().getColumn(0).setMaxWidth(0);
-            adminTable.getColumnModel().getColumn(1).setMinWidth(200);
-            adminTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-            adminTable.getColumnModel().getColumn(1).setMaxWidth(200);
-            adminTable.getColumnModel().getColumn(2).setMinWidth(0);
-            adminTable.getColumnModel().getColumn(2).setMaxWidth(0);
+            adminTable.getColumnModel().getColumn(0).setResizable(false);
+            adminTable.getColumnModel().getColumn(1).setMinWidth(0);
+            adminTable.getColumnModel().getColumn(1).setPreferredWidth(0);
+            adminTable.getColumnModel().getColumn(1).setMaxWidth(0);
+            adminTable.getColumnModel().getColumn(2).setMinWidth(100);
+            adminTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+            adminTable.getColumnModel().getColumn(2).setMaxWidth(100);
             adminTable.getColumnModel().getColumn(3).setMinWidth(0);
             adminTable.getColumnModel().getColumn(3).setMaxWidth(0);
-            adminTable.getColumnModel().getColumn(4).setResizable(false);
-            adminTable.getColumnModel().getColumn(5).setMinWidth(0);
-            adminTable.getColumnModel().getColumn(5).setPreferredWidth(0);
-            adminTable.getColumnModel().getColumn(5).setMaxWidth(0);
+            adminTable.getColumnModel().getColumn(4).setMinWidth(0);
+            adminTable.getColumnModel().getColumn(4).setMaxWidth(0);
+            adminTable.getColumnModel().getColumn(5).setResizable(false);
             adminTable.getColumnModel().getColumn(6).setMinWidth(0);
             adminTable.getColumnModel().getColumn(6).setPreferredWidth(0);
             adminTable.getColumnModel().getColumn(6).setMaxWidth(0);
@@ -847,29 +852,31 @@ public class Admin extends javax.swing.JFrame {
 
     private void adminTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminTableMouseClicked
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) adminTable.getModel();
-        int selectIndex = adminTable.getSelectedRow();
-        recipeId.setText(model.getValueAt(selectIndex, 0).toString());
-        nameData1.setText(model.getValueAt(selectIndex,1).toString());
-        typeData1.setText(model.getValueAt(selectIndex,2).toString());
-        levelData1.setText(model.getValueAt(selectIndex,3).toString());
-        firstData1.setText(model.getValueAt(selectIndex,4).toString());
-        secondData1.setText(model.getValueAt(selectIndex,5).toString());
-        thirdData1.setText(model.getValueAt(selectIndex,6).toString());
-        fourthData1.setText(model.getValueAt(selectIndex,7).toString());
-         try {
-        // Fetch the Blob object from the selected row
-        Blob blob = (Blob) model.getValueAt(selectIndex, 8);
-        // Convert Blob to byte array
-        byte[] imageData = blob.getBytes(1, (int) blob.length());
-        // Convert byte array to ImageIcon
-        ImageIcon imageIcon = new ImageIcon(imageData);
-        // Set the ImageIcon to the dishCover PictureBox
-        dishCover1.setIcon(imageIcon);
-    } catch (SQLException ex) {
-        ex.printStackTrace();   
-    }
-         jTabbedPane1.setSelectedIndex(4);
+      DefaultTableModel model = (DefaultTableModel) adminTable.getModel();
+int selectIndex = adminTable.getSelectedRow();
+recipeId.setText(model.getValueAt(selectIndex, 1).toString());
+nameData1.setText(model.getValueAt(selectIndex, 2).toString());
+typeData1.setText(model.getValueAt(selectIndex, 3).toString());
+levelData1.setText(model.getValueAt(selectIndex, 4).toString());
+firstData1.setText(model.getValueAt(selectIndex, 5).toString());
+secondData1.setText(model.getValueAt(selectIndex, 6).toString());
+thirdData1.setText(model.getValueAt(selectIndex, 7).toString());
+fourthData1.setText(model.getValueAt(selectIndex, 8).toString());
+
+try {
+    // Fetch the image data from the selected row
+    byte[] imageData = (byte[]) model.getValueAt(selectIndex, 8);
+    // Convert byte array to ImageIcon
+    ImageIcon imageIcon = new ImageIcon(imageData);
+    // Set the ImageIcon to the dishCover PictureBox
+    dishCover1.setIcon(imageIcon);
+} catch (ClassCastException ex) {
+    // Handle the exceptions
+    ex.printStackTrace();
+    // Or provide a suitable error message
+} finally {
+    jTabbedPane1.setSelectedIndex(4);
+}
     }//GEN-LAST:event_adminTableMouseClicked
 
     private void imageFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageFileChooserActionPerformed

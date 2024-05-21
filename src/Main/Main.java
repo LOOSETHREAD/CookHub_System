@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Main;
 
 import LoginRegisterSystem.LoginSystem.LoginAndRegister;
+import Swing.ImageIconTableCellRenderer;
 import com.mysql.cj.jdbc.Blob;
 import data.controller.DatabaseController;
 import static data.controller.PopulateDishController.populateTable;
@@ -24,6 +21,7 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 /**
@@ -40,6 +38,9 @@ public class Main extends javax.swing.JFrame {
         mainTableModel = (DefaultTableModel) mainTable.getModel();
         controller = new DatabaseController(mainTableModel);
         populateTable("SELECT * FROM dishtable", mainTable);
+        TableColumnModel columnModel = mainTable.getColumnModel();
+        int imageColumnIndex = 0; 
+        columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         jLayeredPane1.setFocusable(true);
         sorter = new TableRowSorter<>(mainTableModel);
@@ -172,11 +173,11 @@ public class Main extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Name", "Image", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost"
+                "Image", "No.", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false, false, false
@@ -190,6 +191,7 @@ public class Main extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        mainTable.setRowHeight(50);
         mainTable.getTableHeader().setReorderingAllowed(false);
         mainTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -198,14 +200,12 @@ public class Main extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(mainTable);
         if (mainTable.getColumnModel().getColumnCount() > 0) {
-            mainTable.getColumnModel().getColumn(0).setMinWidth(0);
-            mainTable.getColumnModel().getColumn(0).setMaxWidth(0);
-            mainTable.getColumnModel().getColumn(1).setMinWidth(200);
-            mainTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-            mainTable.getColumnModel().getColumn(1).setMaxWidth(200);
-            mainTable.getColumnModel().getColumn(2).setMinWidth(300);
-            mainTable.getColumnModel().getColumn(2).setPreferredWidth(300);
-            mainTable.getColumnModel().getColumn(2).setMaxWidth(300);
+            mainTable.getColumnModel().getColumn(0).setResizable(false);
+            mainTable.getColumnModel().getColumn(1).setMinWidth(0);
+            mainTable.getColumnModel().getColumn(1).setMaxWidth(0);
+            mainTable.getColumnModel().getColumn(2).setMinWidth(200);
+            mainTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+            mainTable.getColumnModel().getColumn(2).setMaxWidth(200);
             mainTable.getColumnModel().getColumn(3).setMinWidth(0);
             mainTable.getColumnModel().getColumn(3).setPreferredWidth(0);
             mainTable.getColumnModel().getColumn(3).setMaxWidth(0);
@@ -452,27 +452,35 @@ public class Main extends javax.swing.JFrame {
 
     private void mainTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainTableMouseClicked
         // TODO add your handling code here:
-
-        int selectIndex = mainTable.getSelectedRow();
-        TableModel model = mainTable.getModel();
-        dishName.setText(model.getValueAt(selectIndex,1).toString());
-        dishDescription.setText(model.getValueAt(selectIndex, 4).toString());
-        dishIngredients.setText(model.getValueAt(selectIndex, 5).toString());
-        dishProcedure.setText(model.getValueAt(selectIndex, 6).toString());
-        dishCost.setText(model.getValueAt(selectIndex, 7).toString());
-        try {
-            // Fetch the Blob object from the selected row
-            Blob blob = (Blob) model.getValueAt(selectIndex, 8);
+         int selectIndex = mainTable.getSelectedRow();
+    TableModel model = mainTable.getModel();
+    
+    dishName.setText(model.getValueAt(selectIndex, 2).toString());
+    dishDescription.setText(model.getValueAt(selectIndex, 5).toString());
+    dishIngredients.setText(model.getValueAt(selectIndex, 6).toString());
+    dishProcedure.setText(model.getValueAt(selectIndex, 7).toString());
+    dishCost.setText(model.getValueAt(selectIndex, 8).toString());
+    
+    try {
+        // Retrieve the Blob object correctly from the model
+        Blob imageBlob = (Blob) model.getValueAt(selectIndex, 0);  // Assuming Blob is at index 0
+        if (imageBlob != null) {
             // Convert Blob to byte array
-            byte[] imageData = blob.getBytes(1, (int) blob.length());
+            byte[] imageData = imageBlob.getBytes(1, (int) imageBlob.length());
             // Convert byte array to ImageIcon
             ImageIcon imageIcon = new ImageIcon(imageData);
-            // Set the ImageIcon to the dishCover PictureBox
+            // Set the ImageIcon to the dishCover component
             dishCover.setIcon(imageIcon);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } else {
+            // Handle case where there's no image
+            dishCover.setIcon(null);
         }
-        jTabbedPane1.setSelectedIndex(1);
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        dishCover.setIcon(null);
+    }
+    
+    jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_mainTableMouseClicked
 
     private void SearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyTyped
