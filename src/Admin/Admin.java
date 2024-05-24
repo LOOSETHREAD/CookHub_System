@@ -44,6 +44,7 @@ public class Admin extends javax.swing.JFrame {
         adminTableModel = (DefaultTableModel) adminTable.getModel();
 
         controller = new DatabaseController(adminTableModel);
+        
         populateTable("SELECT * FROM dishtable", adminTable);
         TableColumnModel columnModel = adminTable.getColumnModel();
         int imageColumnIndex = 0; // Replace 0 with the actual index of your image column
@@ -146,6 +147,7 @@ public class Admin extends javax.swing.JFrame {
         refreshAdminTable();
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
+        
     }
     public void refreshAdminTable(){
         DefaultTableModel tableModel = (DefaultTableModel ) adminTable.getModel();
@@ -356,7 +358,9 @@ public class Admin extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        adminTable.setRowHeight(100);
+        adminTable.setPreferredSize(new java.awt.Dimension(500, 500));
+        adminTable.setRowHeight(200);
+        adminTable.setRowMargin(10);
         adminTable.getTableHeader().setReorderingAllowed(false);
         adminTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -365,7 +369,6 @@ public class Admin extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(adminTable);
         if (adminTable.getColumnModel().getColumnCount() > 0) {
-            adminTable.getColumnModel().getColumn(0).setResizable(false);
             adminTable.getColumnModel().getColumn(1).setMinWidth(0);
             adminTable.getColumnModel().getColumn(1).setPreferredWidth(0);
             adminTable.getColumnModel().getColumn(1).setMaxWidth(0);
@@ -820,6 +823,7 @@ public class Admin extends javax.swing.JFrame {
         // TODO add your handling code here:
         addDataBtn();
        jTabbedPane1.setSelectedIndex(1);
+       refreshAdminTable();
     }//GEN-LAST:event_button2ActionPerformed
 
     private void firstDataFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_firstDataFocusGained
@@ -862,21 +866,17 @@ firstData1.setText(model.getValueAt(selectIndex, 5).toString());
 secondData1.setText(model.getValueAt(selectIndex, 6).toString());
 thirdData1.setText(model.getValueAt(selectIndex, 7).toString());
 fourthData1.setText(model.getValueAt(selectIndex, 8).toString());
-
-try {
-    // Fetch the image data from the selected row
-    byte[] imageData = (byte[]) model.getValueAt(selectIndex, 8);
-    // Convert byte array to ImageIcon
-    ImageIcon imageIcon = new ImageIcon(imageData);
-    // Set the ImageIcon to the dishCover PictureBox
-    dishCover1.setIcon(imageIcon);
-} catch (ClassCastException ex) {
-    // Handle the exceptions
-    ex.printStackTrace();
-    // Or provide a suitable error message
-} finally {
+ImageIcon imageIcon = (ImageIcon) model.getValueAt(selectIndex, 0);
+ if (imageIcon != null) {
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(250,250 , Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        dishCover1.setIcon(scaledIcon);
+    } else {
+        dishCover1.setIcon(null);
+    }
+    
     jTabbedPane1.setSelectedIndex(4);
-}
     }//GEN-LAST:event_adminTableMouseClicked
 
     private void imageFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageFileChooserActionPerformed
@@ -909,10 +909,12 @@ try {
 
     private void showDishBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDishBtnActionPerformed
         jTabbedPane1.setSelectedIndex(1);
+        refreshAdminTable();
     }//GEN-LAST:event_showDishBtnActionPerformed
 
     private void addDishBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDishBtnActionPerformed
          jTabbedPane1.setSelectedIndex(2);
+         refreshAdminTable();
     }//GEN-LAST:event_addDishBtnActionPerformed
 
     private void homeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeBtnActionPerformed

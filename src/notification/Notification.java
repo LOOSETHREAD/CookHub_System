@@ -14,10 +14,13 @@ import Swing.TableActionCellRender;
 import Swing.TableActionEvent;
 import data.controller.DatabaseController;
 import data.database.DatabaseConnection;
+import data.model.datamodel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -30,11 +33,12 @@ public class Notification extends javax.swing.JPanel {
      * Creates new form Notification
      */
     private DefaultTableModel requestTableModel;
-    private DatabaseController controller;
-    public Notification(DefaultTableModel tablemodel) {
+    private PreparedStatement p;
+    public DatabaseController controller;
+    public Notification(DefaultTableModel tableModel) {
         initComponents();
-        this.requestTableModel = tablemodel;
-        this.controller = new DatabaseController(tablemodel);
+        this.requestTableModel = tableModel;
+        this.controller = new DatabaseController(tableModel);
         populateRequestForm();
         TableActionEvent event = new TableActionEvent() {
             @Override
@@ -48,6 +52,37 @@ public class Notification extends javax.swing.JPanel {
         
     }
 
+     public void requestDishToDatabase(datamodel requestform){
+         
+        try {
+             String sql = "INSERT INTO requestform (Request, UserName, DateCreated) VALUES (?, ?, NOW())";
+         p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
+         p.setString(1, (String) requestform.getDishRequest());
+         p.setString(2, (String) requestform.getUserName());
+         int rowsAffected = p.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                Object[] rowData = {requestform.getDishRequest()};
+                requestTableModel.addRow(rowData);
+                JOptionPane.showMessageDialog(null, "Data added successfully.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to add data.");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+             JOptionPane.showMessageDialog(null, "Error adding data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            if (p != null) {
+                try {
+                    p.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
     private void populateRequestForm(){
         try {
             DefaultTableModel model = (DefaultTableModel)requestTable.getModel();
@@ -108,10 +143,7 @@ public class Notification extends javax.swing.JPanel {
 
         requestTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Request Form", ""
@@ -125,7 +157,6 @@ public class Notification extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        requestTable.getTableHeader().setReorderingAllowed(false);
         requestTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 requestTableMouseClicked(evt);

@@ -18,10 +18,15 @@ import javax.swing.table.DefaultTableModel;
 public class DatabaseController {
 private PreparedStatement p;
 private DefaultTableModel tableModel;
+ 
+
     public DatabaseController(DefaultTableModel tableModel) {
+       
+                       
         this.tableModel = tableModel;
         new JTable();
     }
+   
 
     
     public void addDataToDatabase(datamodel addData) throws IOException{
@@ -58,6 +63,7 @@ private DefaultTableModel tableModel;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            
         }
     }
 }
@@ -125,6 +131,7 @@ private DefaultTableModel tableModel;
         p.executeUpdate();
         
         JOptionPane.showMessageDialog(null, "Data updated successfully.");
+        
     } catch (SQLException e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(null, "Error updating data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -136,37 +143,10 @@ private DefaultTableModel tableModel;
                 e.printStackTrace();
             }
         }
+        
     }
 }
-    public void requestDishToDatabase(datamodel requestform){
-        try {
-             String sql = "INSERT INTO requestform (Request, UserName, DateCreated) VALUES (?, ?, NOW())";
-         p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
-         p.setString(1, (String) requestform.getDishRequest());
-         p.setString(2, (String) requestform.getUserName());
-         int rowsAffected = p.executeUpdate();
-            
-            if (rowsAffected > 0) {
-                Object[] rowData = {requestform.getDishRequest()};
-                tableModel.addRow(rowData);
-                JOptionPane.showMessageDialog(null, "Data added successfully.");
-            } else {
-                JOptionPane.showMessageDialog(null, "Failed to add data.");
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-             JOptionPane.showMessageDialog(null, "Error adding data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }finally {
-            if (p != null) {
-                try {
-                    p.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+   
     public void deleteRequestToDatabase(int row, JTable table){
         try {
             String sql = "DELETE FROM requestform WHERE Request = ?";
