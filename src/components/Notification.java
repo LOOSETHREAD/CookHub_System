@@ -15,8 +15,6 @@ import Swing.TableActionEvent;
 import data.controller.DatabaseController;
 import data.database.DatabaseConnection;
 import data.model.datamodel;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -25,16 +23,9 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author User
- */
 public class Notification extends javax.swing.JPanel {
 
-    /**
-     * Creates new form Notification
-     */
-    private DefaultTableModel requestTableModel;
+    DefaultTableModel requestTableModel;
     private PreparedStatement p;
     public DatabaseController controller;
     public Notification(DefaultTableModel tableModel) {
@@ -113,10 +104,6 @@ public class Notification extends javax.swing.JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(getBackground());
         int header = 10;
-//        AffineTransform tran = new AffineTransform();
-//        tran.translate(getWidth()-27, 5);
-//        tran.rotate(Math.toRadians(45));
-//        Path2D p = new Path2D.Double(new RoundRectangle2D.Double(0,0,20,20,5,5),tran);
         Area area = new Area();
         area.add(new Area(new RoundRectangle2D.Double(0,header,getWidth(),getHeight()-header,10,10)));
         g2.fill(area);

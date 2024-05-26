@@ -3,11 +3,9 @@ package data.controller;
 import Swing.ImageIconTableCellRenderer;
 import com.mysql.cj.jdbc.Blob;
 import data.database.DatabaseConnection;
-
 import java.awt.Image;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

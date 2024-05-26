@@ -1,32 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package LoginRegisterSystem.LoginSystem;
 
-/**
- *
- * @author User
- */
 import LoginRegisterSystem.LoginSystem.Panel.PanelCover;
 import LoginRegisterSystem.LoginSystem.Panel.PanelLoginAndRegister;
 import Message.Message;
-import Main.Main;
-import Swing.Button;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import data.model.ModelUser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
-import javax.swing.JLayeredPane;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import data.controller.AddUserController;
-import java.awt.Color;
 
 public class LoginAndRegister extends javax.swing.JFrame {
 
@@ -72,8 +59,6 @@ public class LoginAndRegister extends javax.swing.JFrame {
                         cover.registerRight(fractionCover * 100);
                     }else{
                         cover.loginRight(fractionLogin * 100);
-                        
-                       
                     }
                 }else{
                     fractionCover = fraction;
@@ -118,9 +103,7 @@ public class LoginAndRegister extends javax.swing.JFrame {
     }
     private void register() {
         ModelUser user = new ModelUser();
-        
-        
-//        showMessage(Message.MessageType.SUCCESS, "User Added");
+            showMessage(Message.MessageType.SUCCESS, "User Added");
     }
     
     public void showMessage(Message.MessageType messageType, String message){

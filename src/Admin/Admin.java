@@ -1,17 +1,15 @@
 package Admin;
 
-
 import LoginRegisterSystem.LoginSystem.LoginAndRegister;
 import Swing.GlassPanePopup;
 import Swing.ImageIconTableCellRenderer;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.mysql.cj.jdbc.Blob;
-import static data.controller.PopulateDishController.populateTable;
+import components.Notification;
 import data.controller.DatabaseController;
+import static data.controller.PopulateDishController.populateTable;
 import data.model.datamodel;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,22 +20,17 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.JFrame;
-import components.Notification;
-import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
-
 
 public class Admin extends javax.swing.JFrame {
 
     private DatabaseController controller;
-    private ActionListener event;
     private DefaultTableModel adminTableModel;
-    
+
     public Admin() {
         initComponents();
         GlassPanePopup.install(this);
@@ -45,121 +38,93 @@ public class Admin extends javax.swing.JFrame {
         adminTableModel = (DefaultTableModel) adminTable.getModel();
 
         controller = new DatabaseController(adminTableModel);
-        
+
         populateTable("SELECT * FROM dishtable", adminTable);
         TableColumnModel columnModel = adminTable.getColumnModel();
         int imageColumnIndex = 0; // Replace 0 with the actual index of your image column
         columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
     }
 
-    public void setTextFieldEmpty(){
+    public void setTextFieldEmpty() {
         ImageIcon icon = new ImageIcon(getClass().getResource("/Image/BlackImage.png"));
-        nameData.setText("");
-        typeData.setText("");
-        levelData.setText("");
-        firstData.setText("");
-        secondData.setText("");
-        thirdData.setText("");
-        fourthData.setText("");
+        clearTextFields();
         dishCover.setImage(icon);
         dishCover.repaint();
-        nameData1.setText("");
-        typeData1.setText("");
-        levelData1.setText("");
-        firstData1.setText("");
-        secondData1.setText("");
-        thirdData1.setText("");
-        fourthData1.setText("");
         dishCover1.setImage(icon);
         dishCover1.repaint();
     }
 
-    public void addDataBtn(){
+    private void clearTextFields() {
+        nameData.setText("");
+        typeData.setSelectedItem("");
+        levelData.setSelectedItem("");
+        firstData.setText("");
+        secondData.setText("");
+        thirdData.setText("");
+        fourthData.setText("");
+        nameData1.setText("");
+        typeData1.setSelectedItem("");
+        levelData1.setSelectedItem("");
+        firstData1.setText("");
+        secondData1.setText("");
+        thirdData1.setText("");
+        fourthData1.setText("");
+    }
+
+    public void addDataBtn() {
         Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         try {
             imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-        
-        datamodel newdata = new datamodel(nameData1.getText(),typeData1.getText(),levelData1.getText(),firstData1.getText(), secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
-        controller.addDataToDatabase(newdata);
-        
-        refreshAdminTable();
-        setTextFieldEmpty();
+            datamodel newdata = new datamodel(nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText(), new ImageIcon(imageBytes));
+            controller.addDataToDatabase(newdata);
+            refreshAdminTable();
+            setTextFieldEmpty();
         } catch (IOException ex) {
-            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+            handleException("Error adding data to database", ex);
         }
     }
-   public byte[] convertImageIconToByteArray(ImageIcon icon) {
-    // Get the image from the ImageIcon
-    Image image = icon.getImage();
 
-    // Check if the image is properly loaded
-    if (image != null) {
-        // Get the dimensions of the image
-        int width = image.getWidth(null);
-        int height = image.getHeight(null);
+    public byte[] convertImageIconToByteArray(Icon icon) throws IOException {
+    BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+    icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
 
-        // Check if the dimensions are valid
-        if (width > 0 && height > 0) {
-            // Convert the image to a BufferedImage
-            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = bufferedImage.createGraphics();
-            g2d.drawImage(image, 0, 0, null);
-            g2d.dispose();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ImageIO.write(bufferedImage, "png", outputStream);
 
-            // Convert the BufferedImage to a byte array
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                ImageIO.write(bufferedImage, "png", baos);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return baos.toByteArray();
-        } else {
-            // Handle invalid dimensions
-            System.err.println("Invalid image dimensions.");
-            return null;
-        }
-    } else {
-        // Handle null image
-        System.err.println("Image is null.");
-        return null;
-    }
+    return outputStream.toByteArray();
 }
-    public void deleteDataBtn(){
+    public void deleteDataBtn() throws IOException {
         Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-        datamodel newdata = new datamodel(nameData1.getText(), typeData1.getText(), levelData1.getText(), firstData1.getText(),secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
+        datamodel newdata = new datamodel(nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText(), new ImageIcon(imageBytes));
         controller.deleteDataToDatabase(newdata);
         refreshAdminTable();
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
     }
-    
-    
-    public void updateDataBtn() throws IOException{
-         Icon picIcon = dishCover1.getImage();
+
+    public void updateDataBtn() throws IOException {
+        Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         int idData = Integer.parseInt(recipeId.getText());
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-         datamodel newdata = new datamodel(nameData1.getText(), typeData1.getText(), levelData1.getText(), firstData1.getText(),secondData1.getText(),thirdData1.getText(),fourthData1.getText(), new ImageIcon(imageBytes));
-        controller.updateDataToDatabase(newdata,idData);
+        datamodel newdata = new datamodel(nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText(), new ImageIcon(imageBytes));
+        controller.updateDataToDatabase(newdata, idData);
         refreshAdminTable();
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
-        
     }
-    public void refreshAdminTable(){
-        DefaultTableModel tableModel = (DefaultTableModel ) adminTable.getModel();
 
+    public void refreshAdminTable() {
+        DefaultTableModel tableModel = (DefaultTableModel) adminTable.getModel();
         tableModel.setRowCount(0);
-        
         populateTable("SELECT * FROM dishtable", adminTable);
     }
-    
-    public void uploadImage(){
-              JFileChooser imgChooser = new JFileChooser();
+
+    public void uploadImage() {
+    JFileChooser imgChooser = new JFileChooser();
     FileNameExtensionFilter fn = new FileNameExtensionFilter("IMAGES", "png", "jpg", "jpeg");
     imgChooser.addChoosableFileFilter(fn);
 
@@ -168,29 +133,37 @@ public class Admin extends javax.swing.JFrame {
     if (showOpenDialog == JFileChooser.APPROVE_OPTION) {
         File selectedFile = imgChooser.getSelectedFile();
 
-        String fileName = selectedFile.getName();
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-
-        if (!extension.equals("png") && !extension.equals("jpg") && !extension.equals("jpeg")) {
-            JOptionPane.showMessageDialog(this, "Not an image, Please try again!!");
-        } else {
-            if (selectedFile != null) {
-                try {
-                    BufferedImage originalImage = ImageIO.read(selectedFile);             
+        if (selectedFile != null) {
+            try {
+                BufferedImage originalImage = ImageIO.read(selectedFile);
+                if (originalImage != null) {
                     int targetWidth = 800;
                     int targetHeight = (int) ((double) originalImage.getHeight() / originalImage.getWidth() * targetWidth);
-                    Image resizedImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);                
-                    ImageIcon imgIcon = new ImageIcon(resizedImage);
+                    Image resizedImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+                    ImageIcon imgIcon;
+                    if (resizedImage != null) {
+                        imgIcon = new ImageIcon(resizedImage);
+                    } else {
+                        // Provide a default icon if resized image is null
+                        imgIcon = new ImageIcon(getClass().getResource("/Image/default_image_icon.png"));
+                    }
                     dishCover.setImage(imgIcon);
                     dishCover.repaint();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to load the image. The file may be corrupted or not an image.");
                 }
-            } else {
-                System.out.println("No file selected");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        } else {
+            System.out.println("No file selected");
         }
     }
+}
+
+     private void handleException(String message, Exception ex) {
+        Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, message, ex);
+        JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -215,13 +188,13 @@ public class Admin extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         nameData = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        typeData = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        levelData = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         firstData = new javax.swing.JTextPane();
         button5 = new Swing.Button();
+        typeData = new Swing.ComboBoxSuggestion();
+        levelData = new Swing.ComboBoxSuggestion();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -238,11 +211,9 @@ public class Admin extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         nameData1 = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        typeData1 = new javax.swing.JTextField();
         jScrollPane7 = new javax.swing.JScrollPane();
         firstData1 = new javax.swing.JTextPane();
         jLabel10 = new javax.swing.JLabel();
-        levelData1 = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
@@ -256,6 +227,8 @@ public class Admin extends javax.swing.JFrame {
         button2 = new Swing.Button();
         button4 = new Swing.Button();
         button3 = new Swing.Button();
+        typeData1 = new Swing.ComboBoxSuggestion();
+        levelData1 = new Swing.ComboBoxSuggestion();
         showDishBtn = new Swing.Button();
         homeBtn = new Swing.Button();
         addDishBtn = new Swing.Button();
@@ -426,21 +399,9 @@ public class Admin extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Type");
+        jLabel6.setText("Category");
 
-        typeData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeDataActionPerformed(evt);
-            }
-        });
-
-        jLabel7.setText("Level");
-
-        levelData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                levelDataActionPerformed(evt);
-            }
-        });
+        jLabel7.setText("Difficulty");
 
         jLabel2.setText("Description");
 
@@ -459,6 +420,12 @@ public class Admin extends javax.swing.JFrame {
             }
         });
 
+        typeData.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Snack/Dessert", "Breakfast/Lunch", "Breakfast/Dinner", "Lunch/Dinner", "Breakfast/Lunch/Dinner" }));
+        typeData.setSelectedIndex(-1);
+
+        levelData.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Easy", "Medium", "Hard" }));
+        levelData.setSelectedIndex(-1);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -467,15 +434,20 @@ public class Admin extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(levelData, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(typeData)
+                            .addComponent(typeData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(nameData)
                             .addComponent(dishCover, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addComponent(imageFileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(levelData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(69, 69, 69)
@@ -485,17 +457,12 @@ public class Admin extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 321, Short.MAX_VALUE)
                                 .addComponent(button5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(205, 205, 205))))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(205, 205, 205))))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(52, Short.MAX_VALUE)
+                .addContainerGap(43, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -513,14 +480,14 @@ public class Admin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
-                .addComponent(typeData, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(typeData, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(levelData, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(297, Short.MAX_VALUE))
+                    .addComponent(button5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(levelData, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(294, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab3", jPanel3);
@@ -606,13 +573,7 @@ public class Admin extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setText("Type");
-
-        typeData1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeData1ActionPerformed(evt);
-            }
-        });
+        jLabel9.setText("Category");
 
         firstData1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -621,13 +582,7 @@ public class Admin extends javax.swing.JFrame {
         });
         jScrollPane7.setViewportView(firstData1);
 
-        jLabel10.setText("Level");
-
-        levelData1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                levelData1ActionPerformed(evt);
-            }
-        });
+        jLabel10.setText("Difficulty");
 
         jLabel11.setText("Description");
 
@@ -667,6 +622,13 @@ public class Admin extends javax.swing.JFrame {
             }
         });
 
+        typeData1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Snack/Dessert", "Breakfast/Lunch", "Breakfast/Dinner", "Lunch/Dinner", "Breakfast/Lunch/Dinner" }));
+        typeData1.setSelectedIndex(-1);
+        typeData1.setToolTipText("");
+
+        levelData1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Easy", "Medium", "Hard" }));
+        levelData1.setSelectedIndex(-1);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -686,10 +648,6 @@ public class Admin extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(181, 181, 181)
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -702,9 +660,13 @@ public class Admin extends javax.swing.JFrame {
                                             .addComponent(button4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(typeData1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(162, 162, 162)
+                                .addComponent(jLabel10))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(typeData1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(levelData1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(levelData1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(198, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(dishCover1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -730,11 +692,11 @@ public class Admin extends javax.swing.JFrame {
                     .addComponent(jLabel9)
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nameData1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(typeData1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(levelData1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(levelData1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -752,7 +714,7 @@ public class Admin extends javax.swing.JFrame {
                         .addComponent(button4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(296, Short.MAX_VALUE))
+                .addContainerGap(294, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab5", jPanel5);
@@ -826,17 +788,13 @@ public class Admin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_firstDataFocusGained
 
-    private void typeDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeDataActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeDataActionPerformed
-
-    private void levelDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_levelDataActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_levelDataActionPerformed
-
     private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
-        // TODO add your handling code here:
-        deleteDataBtn();
+        try {
+            // TODO add your handling code here:
+            deleteDataBtn();
+        } catch (IOException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
          jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button3ActionPerformed
 
@@ -866,17 +824,9 @@ public class Admin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameData1ActionPerformed
 
-    private void typeData1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeData1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeData1ActionPerformed
-
     private void firstData1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_firstData1FocusGained
         // TODO add your handling code here:
     }//GEN-LAST:event_firstData1FocusGained
-
-    private void levelData1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_levelData1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_levelData1ActionPerformed
 
     private void showDishBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDishBtnActionPerformed
         jTabbedPane1.setSelectedIndex(1);
@@ -896,8 +846,8 @@ public class Admin extends javax.swing.JFrame {
 
     private void button6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button6ActionPerformed
        nameData1.setText(nameData.getText());
-       typeData1.setText(typeData.getText());
-       levelData1.setText(levelData.getText());
+       typeData1.setSelectedItem((String) typeData.getSelectedItem());
+       levelData1.setSelectedItem((String) levelData.getSelectedItem());
         firstData1.setText(firstData.getText());
         secondData1.setText(secondData.getText());
         thirdData1.setText(thirdData.getText());
@@ -921,8 +871,8 @@ public class Admin extends javax.swing.JFrame {
 int selectIndex = adminTable.getSelectedRow();
 recipeId.setText(model.getValueAt(selectIndex, 1).toString());
 nameData1.setText(model.getValueAt(selectIndex, 2).toString());
-typeData1.setText(model.getValueAt(selectIndex, 3).toString());
-levelData1.setText(model.getValueAt(selectIndex, 4).toString());
+typeData1.setSelectedItem(model.getValueAt(selectIndex, 3).toString());
+levelData1.setSelectedItem(model.getValueAt(selectIndex, 4).toString());
 firstData1.setText(model.getValueAt(selectIndex, 5).toString());
 secondData1.setText(model.getValueAt(selectIndex, 6).toString());
 thirdData1.setText(model.getValueAt(selectIndex, 7).toString());
@@ -1003,8 +953,8 @@ ImageIcon imageIcon = (ImageIcon) model.getValueAt(selectIndex, 0);
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField levelData;
-    private javax.swing.JTextField levelData1;
+    private Swing.ComboBoxSuggestion levelData;
+    private Swing.ComboBoxSuggestion levelData1;
     private javax.swing.JTextField nameData;
     private javax.swing.JTextField nameData1;
     private components.PanelCover panelCover2;
@@ -1016,7 +966,7 @@ ImageIcon imageIcon = (ImageIcon) model.getValueAt(selectIndex, 0);
     private Swing.Button showDishBtn;
     private javax.swing.JTextPane thirdData;
     private javax.swing.JTextPane thirdData1;
-    private javax.swing.JTextField typeData;
-    private javax.swing.JTextField typeData1;
+    private Swing.ComboBoxSuggestion typeData;
+    private Swing.ComboBoxSuggestion typeData1;
     // End of variables declaration//GEN-END:variables
 }

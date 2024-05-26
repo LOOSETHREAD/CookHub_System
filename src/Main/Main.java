@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.sql.PreparedStatement;
@@ -23,11 +22,14 @@ import javax.swing.JOptionPane;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import components.Notification;
+import java.awt.Component;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 
-/**
- *
- * @author User
- */
 public class Main extends javax.swing.JFrame {
     private final DatabaseController controller;
 
@@ -46,11 +48,27 @@ public class Main extends javax.swing.JFrame {
         TableColumnModel columnModel = mainTable.getColumnModel();
         int imageColumnIndex = 0; 
         columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         jLayeredPane1.setFocusable(true);
         mainTable.setRowSorter(sorter);
-        
-    }
+        mainTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if(column == 5){
+                    JTextArea txt = new JTextArea(value + "");
+                    txt.setWrapStyleWord(true);
+                    txt.setLineWrap(true);
+                    txt.setBackground(getBackground());
+                    JScrollPane sp = new JScrollPane(txt);
+                    sp.setBorder(null);
+                    return sp;
+            } else{
+                    super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    setBorder(new EmptyBorder(1,5,1,5));
+                    return this;
+                }
+            }
+        });
+     }
      public void setTextFieldEmpty(){
         ImageIcon icon = new ImageIcon(getClass().getResource("/Image/BlackImage.png"));
         dishName.setText("");
@@ -94,7 +112,23 @@ public class Main extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+    }
+         private void refreshMainTable() {
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                DefaultTableModel tableModel = (DefaultTableModel) mainTable.getModel();
+                tableModel.setRowCount(0);
+                populateTable("SELECT * FROM dishtable", mainTable);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+               
+            }
+        };
+        worker.execute();
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -112,6 +146,10 @@ public class Main extends javax.swing.JFrame {
         pictureBox2 = new components.PictureBox();
         dishRequest1 = new Swing.MyTextField();
         button4 = new Swing.Button();
+        refreshBtn = new Swing.ActionButton();
+        filterBtn = new Swing.ActionButton();
+        categoryBox = new Swing.ComboBoxSuggestion();
+        difficultyBox = new Swing.ComboBoxSuggestion();
         jPanel2 = new javax.swing.JPanel();
         dishCover = new components.PictureBox();
         jLabel3 = new javax.swing.JLabel();
@@ -126,10 +164,11 @@ public class Main extends javax.swing.JFrame {
         dishName = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
         dishDescription = new javax.swing.JTextPane();
-        button2 = new Swing.Button();
         pictureBox1 = new components.PictureBox();
+        button2 = new Swing.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jLayeredPane1.setBackground(new java.awt.Color(255, 255, 255));
         jLayeredPane1.setOpaque(true);
@@ -137,6 +176,8 @@ public class Main extends javax.swing.JFrame {
         panelCover2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setMaximumSize(new java.awt.Dimension(1280, 709));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1280, 709));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Search.setText("Search Dish or Ingredient");
@@ -169,8 +210,9 @@ public class Main extends javax.swing.JFrame {
                 SearchKeyTyped(evt);
             }
         });
-        jPanel1.add(Search, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 270, -1));
+        jPanel1.add(Search, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 210, -1));
 
+        mainTable.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         mainTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null},
@@ -230,22 +272,22 @@ public class Main extends javax.swing.JFrame {
             mainTable.getColumnModel().getColumn(8).setMaxWidth(0);
         }
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 1260, 440));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 1100, 360));
 
         jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Swis721 Ex BT", 1, 48)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(105, 26, 0));
         jLabel5.setText("WELCOME ,");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 240, -1, 80));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 230, -1, 50));
 
         userName1.setFont(new java.awt.Font("Swis721 Ex BT", 1, 48)); // NOI18N
         userName1.setForeground(new java.awt.Color(105, 26, 0));
         userName1.setText("Username");
-        jPanel1.add(userName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 240, 370, 80));
+        jPanel1.add(userName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 230, 380, 50));
 
         pictureBox2.setBackground(new java.awt.Color(255, 255, 255));
         pictureBox2.setImage(new javax.swing.ImageIcon(getClass().getResource("/Image/CookHubLogo.png"))); // NOI18N
-        jPanel1.add(pictureBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, 440, 220));
+        jPanel1.add(pictureBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 370, 180));
 
         dishRequest1.setText("Request dish here");
         dishRequest1.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -266,7 +308,7 @@ public class Main extends javax.swing.JFrame {
                 dishRequest1KeyPressed(evt);
             }
         });
-        jPanel1.add(dishRequest1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1065, 290, 200, 50));
+        jPanel1.add(dishRequest1, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 300, 200, -1));
 
         button4.setBackground(new java.awt.Color(255, 230, 204));
         button4.setText("Logout");
@@ -276,11 +318,53 @@ public class Main extends javax.swing.JFrame {
                 button4ActionPerformed(evt);
             }
         });
-        jPanel1.add(button4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 10, 90, -1));
+        jPanel1.add(button4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 10, 90, -1));
+
+        refreshBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-refresh-30.png"))); // NOI18N
+        refreshBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshBtnActionPerformed(evt);
+            }
+        });
+        jPanel1.add(refreshBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 40, 40));
+
+        filterBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-filter-24.png"))); // NOI18N
+        filterBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterBtnActionPerformed(evt);
+            }
+        });
+        jPanel1.add(filterBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 310, 30, 30));
+
+        categoryBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Snack/Dessert", "Breakfast/Lunch", "Breakfast/Dinner", "Lunch/Dinner", "Breakfast/Lunch/Dinner" }));
+        categoryBox.setSelectedIndex(-1);
+        categoryBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                categoryBoxMouseClicked(evt);
+            }
+        });
+        jPanel1.add(categoryBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 310, -1, 30));
+
+        difficultyBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Easy", "Medium", "Hard" }));
+        difficultyBox.setSelectedIndex(-1);
+        difficultyBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                difficultyBoxMouseClicked(evt);
+            }
+        });
+        difficultyBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                difficultyBoxActionPerformed(evt);
+            }
+        });
+        jPanel1.add(difficultyBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 310, 120, 30));
 
         jTabbedPane1.addTab("tab1", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setMaximumSize(new java.awt.Dimension(1280, 709));
+        jPanel2.setMinimumSize(new java.awt.Dimension(1280, 709));
+        jPanel2.setPreferredSize(new java.awt.Dimension(1280, 709));
 
         dishCover.setBackground(new java.awt.Color(255, 255, 255));
         dishCover.setImage(new javax.swing.ImageIcon(getClass().getResource("/Image/BlackImage.png"))); // NOI18N
@@ -310,6 +394,8 @@ public class Main extends javax.swing.JFrame {
         dishDescription.setMaximumSize(new java.awt.Dimension(62, 20));
         jScrollPane6.setViewportView(dishDescription);
 
+        pictureBox1.setImage(new javax.swing.ImageIcon(getClass().getResource("/Image/CookHubLogo.png"))); // NOI18N
+
         button2.setBackground(new java.awt.Color(255, 230, 204));
         button2.setText("Back");
         button2.setToolTipText("");
@@ -319,78 +405,72 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        pictureBox1.setImage(new javax.swing.ImageIcon(getClass().getResource("/Image/CookHubLogo.png"))); // NOI18N
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dishCover, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(dishCover, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(6, 6, 6)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 817, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(dishName, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(35, 35, 35)
+                        .addComponent(dishName, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(171, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
+                .addContainerGap(58, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(dishName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(dishCover, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
                         .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11))))
+                        .addGap(18, 18, 18)
+                        .addComponent(dishCover, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addGap(0, 0, 0))
         );
 
         jTabbedPane1.addTab("tab2", jPanel2);
 
-        panelCover2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(136, -33, 1280, 830));
+        panelCover2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, -33, 1120, 740));
 
         jLayeredPane1.setLayer(panelCover2, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -398,25 +478,26 @@ public class Main extends javax.swing.JFrame {
         jLayeredPane1.setLayout(jLayeredPane1Layout);
         jLayeredPane1Layout.setHorizontalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelCover2, javax.swing.GroupLayout.PREFERRED_SIZE, 1330, Short.MAX_VALUE)
+            .addComponent(panelCover2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1191, Short.MAX_VALUE)
         );
         jLayeredPane1Layout.setVerticalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelCover2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelCover2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLayeredPane1)
+            .addComponent(jLayeredPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLayeredPane1)
+            .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void dishRequest1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dishRequest1FocusGained
@@ -525,6 +606,31 @@ public class Main extends javax.swing.JFrame {
         Search.setForeground(new Color(153,153,153));
     }//GEN-LAST:event_SearchFocusGained
 
+    private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
+        // TODO add your handling code here:
+        controller.filterField((String) categoryBox.getSelectedItem(), mainTable);
+        controller.filterField((String) difficultyBox.getSelectedItem(), mainTable);
+    }//GEN-LAST:event_filterBtnActionPerformed
+
+    private void refreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtnActionPerformed
+        // TODO add your handling code here:
+        refreshMainTable();
+    }//GEN-LAST:event_refreshBtnActionPerformed
+
+    private void difficultyBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_difficultyBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_difficultyBoxActionPerformed
+
+    private void categoryBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_categoryBoxMouseClicked
+        // TODO add your handling code here:
+        setTextFieldEmpty();
+    }//GEN-LAST:event_categoryBoxMouseClicked
+
+    private void difficultyBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_difficultyBoxMouseClicked
+        // TODO add your handling code here:
+        setTextFieldEmpty();
+    }//GEN-LAST:event_difficultyBoxMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -556,8 +662,6 @@ public class Main extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Main  main = new Main();
-                main.setVisible(true);
-                main.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
     }
@@ -566,6 +670,8 @@ public class Main extends javax.swing.JFrame {
     private Swing.MyTextField Search;
     private Swing.Button button2;
     private Swing.Button button4;
+    private Swing.ComboBoxSuggestion categoryBox;
+    private Swing.ComboBoxSuggestion difficultyBox;
     private javax.swing.JTextPane dishCost;
     private components.PictureBox dishCover;
     private javax.swing.JTextPane dishDescription;
@@ -573,6 +679,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel dishName;
     private javax.swing.JTextPane dishProcedure;
     private Swing.MyTextField dishRequest1;
+    private Swing.ActionButton filterBtn;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -590,6 +697,7 @@ public class Main extends javax.swing.JFrame {
     private components.PanelCover panelCover2;
     private components.PictureBox pictureBox1;
     private components.PictureBox pictureBox2;
+    private Swing.ActionButton refreshBtn;
     public javax.swing.JLabel userName1;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package LoginRegisterSystem.LoginSystem.Panel;
 
 import Admin.Admin;
@@ -20,13 +17,10 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,14 +28,6 @@ import net.miginfocom.swing.MigLayout;
 
 public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
-    /**
-     * @return the addUserController
-     */
-  
-
-    /**
-     * @return the user
-     */
     public ModelUser getUser() {
         return user;
     }
@@ -65,9 +51,6 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         register.setVisible(true);
        
     }
-//    public PanelLoginAndRegister() {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
     private void initRegister(ActionListener eventRegister){
         register.setLayout(new MigLayout("wrap","push[center]push","push[]25[]10[]10[]5[]25[]push"));
         JLabel label = new JLabel("Create Account");
@@ -219,8 +202,6 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             login.setVisible(true);
         }
     }
-
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

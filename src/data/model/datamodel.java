@@ -1,29 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package data.model;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
 
 
 
 public class datamodel {
 
-    /**
-     * @return the dishRequestID
-     */
     public int getDishRequestID() {
         return dishRequestID;
     }
-
-    /**
-     * @param dishRequestID the dishRequestID to set
-     */
     public void setDishRequestID(int dishRequestID) {
         this.dishRequestID = dishRequestID;
     }
@@ -31,33 +17,15 @@ public class datamodel {
     public String getUserName() {
         return userName;
     }
-
-    /**
-     * @param userName the userName to set
-     */
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    /**
-     * @return the dishRequest
-     */
     public String getDishRequest() {
         return dishRequest;
     }
-
-    /**
-     * @param dishRequest the dishRequest to set
-     */
     public void setDishRequest(String dishRequest) {
         this.dishRequest = dishRequest;
     }
-
-
-    /**
-     * @return the dishRequest
-     */
-    
     public Icon getDishCover() {
         return dishCover;
     }
@@ -146,16 +114,6 @@ public class datamodel {
 
     public datamodel() {
     }
-  
-    private byte[] convertImageIconToByteArray(Icon icon) throws IOException {
-    BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-    icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    ImageIO.write(bufferedImage, "png", outputStream);
-
-    return outputStream.toByteArray();
-}
     
      
     private String userName;
