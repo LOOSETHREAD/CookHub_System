@@ -53,7 +53,7 @@ public class Main extends javax.swing.JFrame {
         mainTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                if(column == 5){
+                if(column == 4){
                     JTextArea txt = new JTextArea(value + "");
                     txt.setWrapStyleWord(true);
                     txt.setLineWrap(true);
