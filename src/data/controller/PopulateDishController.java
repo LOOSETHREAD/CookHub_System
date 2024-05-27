@@ -17,30 +17,29 @@ import javax.swing.table.DefaultTableModel;
 
 public class PopulateDishController {
 
-    public static void populateTable(String query, JTable table) {
+    public static void populateTable( JTable table) {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
 
     try {
         
-        ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
-        rs = ps.executeQuery();
+        ps = DatabaseConnection.getInstance().getConnection().prepareStatement("SELECT * FROM dishtable");
+       
 
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
-
+        table.getColumnModel().getColumn(0).setCellRenderer(new ImageIconTableCellRenderer());
+        rs = ps.executeQuery();
         while (rs.next()) {
-           Vector <Object> v = new Vector<>();
-            for (int i = 0; i < 35; i++) {
+           
+            
                 
             
-
+                Vector <Object> v = new Vector<>();
                 Blob blob = (Blob) rs.getBlob("Image");
-                table.getColumnModel().getColumn(0).setCellRenderer(new ImageIconTableCellRenderer()); 
                 ImageIcon imageicon = blobToImageIcon(blob,200,200);
                 v.add(imageicon);
-                v.add(rs.getInt("No."));
                 v.add(rs.getString("Name"));
                 v.add(rs.getString("Type"));
                 v.add(rs.getString("Level"));
@@ -48,8 +47,9 @@ public class PopulateDishController {
                 v.add(rs.getString("Ingredients"));
                 v.add(rs.getString("Procedures"));
                 v.add(rs.getString("Cost"));
-            }
-            model.addRow(v);
+                v.add(rs.getInt("No."));
+                model.addRow(v);
+           
         }
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

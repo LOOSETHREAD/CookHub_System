@@ -89,7 +89,6 @@ public class Notification extends javax.swing.JPanel {
             while (rs.next()) {                
                 Vector v = new Vector();
                 for (int i = 0; i < a; i++) {
-//                    v.add(rs.getInt("ID"));
                     v.add(rs.getString("Request"));
                 }
                 model.addRow(v);

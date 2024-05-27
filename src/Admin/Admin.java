@@ -9,6 +9,8 @@ import data.controller.DatabaseController;
 import static data.controller.PopulateDishController.populateTable;
 import data.model.datamodel;
 import java.awt.Graphics2D;
+
+        
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -25,24 +27,51 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import Message.Message;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class Admin extends javax.swing.JFrame {
 
     private DatabaseController controller;
     private DefaultTableModel adminTableModel;
+   
 
     public Admin() {
         initComponents();
         GlassPanePopup.install(this);
         recipeId.setVisible(false);
         adminTableModel = (DefaultTableModel) adminTable.getModel();
-
+        populateTable(adminTable);
         controller = new DatabaseController(adminTableModel);
 
-        populateTable("SELECT * FROM dishtable", adminTable);
+        
         TableColumnModel columnModel = adminTable.getColumnModel();
         int imageColumnIndex = 0; // Replace 0 with the actual index of your image column
         columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
+        adminTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if(column == 4){
+                    JTextArea txt = new JTextArea(value + "");
+                    txt.setWrapStyleWord(true);
+                    txt.setLineWrap(true);
+                    txt.setBackground(getBackground());
+                    JScrollPane sp = new JScrollPane(txt);
+                    sp.setBorder(null);
+                    return sp;
+            } else{
+                    super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    setBorder(new EmptyBorder(1,5,1,5));
+                    return this;
+                }
+            }
+        });
     }
 
     public void setTextFieldEmpty() {
@@ -76,13 +105,14 @@ public class Admin extends javax.swing.JFrame {
         byte[] imageBytes;
         try {
             imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-            datamodel newdata = new datamodel(nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText(), new ImageIcon(imageBytes));
+            datamodel newdata = new datamodel(new ImageIcon(imageBytes),nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText());
             controller.addDataToDatabase(newdata);
-            refreshAdminTable();
+            
             setTextFieldEmpty();
         } catch (IOException ex) {
             handleException("Error adding data to database", ex);
         }
+        
     }
 
     public byte[] convertImageIconToByteArray(Icon icon) throws IOException {
@@ -98,9 +128,9 @@ public class Admin extends javax.swing.JFrame {
         Icon picIcon = dishCover1.getImage();
         byte[] imageBytes;
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-        datamodel newdata = new datamodel(nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText(), new ImageIcon(imageBytes));
+        datamodel newdata = new datamodel(new ImageIcon(imageBytes),nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText());
         controller.deleteDataToDatabase(newdata);
-        refreshAdminTable();
+        
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
     }
@@ -110,18 +140,18 @@ public class Admin extends javax.swing.JFrame {
         byte[] imageBytes;
         int idData = Integer.parseInt(recipeId.getText());
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
-        datamodel newdata = new datamodel(nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText(), new ImageIcon(imageBytes));
+        datamodel newdata = new datamodel(new ImageIcon(imageBytes),nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText());
         controller.updateDataToDatabase(newdata, idData);
-        refreshAdminTable();
+        
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
     }
 
-    public void refreshAdminTable() {
-        DefaultTableModel tableModel = (DefaultTableModel) adminTable.getModel();
-        tableModel.setRowCount(0);
-        populateTable("SELECT * FROM dishtable", adminTable);
-    }
+//    public void refreshAdminTable() {
+//        DefaultTableModel tableModel = (DefaultTableModel) adminTable.getModel();
+//        tableModel.setRowCount(0);
+//        populateTable( adminTable);
+//    }
 
     public void uploadImage() {
     JFileChooser imgChooser = new JFileChooser();
@@ -182,6 +212,7 @@ public class Admin extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         adminTable = new javax.swing.JTable();
+        refreshBtn1 = new Swing.ActionButton();
         jPanel3 = new javax.swing.JPanel();
         dishCover = new components.PictureBox();
         imageFileChooser = new javax.swing.JButton();
@@ -301,16 +332,18 @@ public class Admin extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab1", jPanel1);
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
         adminTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Image", "No.", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost"
+                "Image", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost", "No."
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false, false, false
@@ -337,19 +370,20 @@ public class Admin extends javax.swing.JFrame {
             adminTable.getColumnModel().getColumn(0).setMinWidth(200);
             adminTable.getColumnModel().getColumn(0).setPreferredWidth(200);
             adminTable.getColumnModel().getColumn(0).setMaxWidth(200);
-            adminTable.getColumnModel().getColumn(1).setMinWidth(0);
-            adminTable.getColumnModel().getColumn(1).setPreferredWidth(0);
-            adminTable.getColumnModel().getColumn(1).setMaxWidth(0);
-            adminTable.getColumnModel().getColumn(2).setMinWidth(100);
-            adminTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-            adminTable.getColumnModel().getColumn(2).setMaxWidth(100);
+            adminTable.getColumnModel().getColumn(0).setCellRenderer(null);
+            adminTable.getColumnModel().getColumn(1).setMinWidth(100);
+            adminTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+            adminTable.getColumnModel().getColumn(1).setMaxWidth(100);
+            adminTable.getColumnModel().getColumn(2).setMinWidth(0);
+            adminTable.getColumnModel().getColumn(2).setPreferredWidth(0);
+            adminTable.getColumnModel().getColumn(2).setMaxWidth(0);
             adminTable.getColumnModel().getColumn(3).setMinWidth(0);
             adminTable.getColumnModel().getColumn(3).setPreferredWidth(0);
             adminTable.getColumnModel().getColumn(3).setMaxWidth(0);
-            adminTable.getColumnModel().getColumn(4).setMinWidth(0);
-            adminTable.getColumnModel().getColumn(4).setPreferredWidth(0);
-            adminTable.getColumnModel().getColumn(4).setMaxWidth(0);
-            adminTable.getColumnModel().getColumn(5).setResizable(false);
+            adminTable.getColumnModel().getColumn(4).setResizable(false);
+            adminTable.getColumnModel().getColumn(5).setMinWidth(0);
+            adminTable.getColumnModel().getColumn(5).setPreferredWidth(0);
+            adminTable.getColumnModel().getColumn(5).setMaxWidth(0);
             adminTable.getColumnModel().getColumn(6).setMinWidth(0);
             adminTable.getColumnModel().getColumn(6).setPreferredWidth(0);
             adminTable.getColumnModel().getColumn(6).setMaxWidth(0);
@@ -357,9 +391,15 @@ public class Admin extends javax.swing.JFrame {
             adminTable.getColumnModel().getColumn(7).setPreferredWidth(0);
             adminTable.getColumnModel().getColumn(7).setMaxWidth(0);
             adminTable.getColumnModel().getColumn(8).setMinWidth(0);
-            adminTable.getColumnModel().getColumn(8).setPreferredWidth(0);
             adminTable.getColumnModel().getColumn(8).setMaxWidth(0);
         }
+
+        refreshBtn1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-refresh-30.png"))); // NOI18N
+        refreshBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshBtn1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -367,15 +407,19 @@ public class Admin extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(181, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addComponent(refreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(285, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab2", jPanel2);
@@ -544,19 +588,17 @@ public class Admin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                             .addComponent(jScrollPane2)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(button6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)))
-                .addContainerGap(280, Short.MAX_VALUE))
+                    .addComponent(button6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(289, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab4", jPanel4);
@@ -755,7 +797,10 @@ public class Admin extends javax.swing.JFrame {
         );
         jLayeredPane1Layout.setVerticalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelCover2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelCover2, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -766,7 +811,7 @@ public class Admin extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -781,7 +826,10 @@ public class Admin extends javax.swing.JFrame {
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
         // TODO add your handling code here:
         addDataBtn();
+       
        jTabbedPane1.setSelectedIndex(1);
+       populateTable(adminTable);
+      
     }//GEN-LAST:event_button2ActionPerformed
 
     private void firstDataFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_firstDataFocusGained
@@ -795,6 +843,7 @@ public class Admin extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
+        populateTable(adminTable);
          jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button3ActionPerformed
 
@@ -805,12 +854,27 @@ public class Admin extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
+        populateTable(adminTable);
          jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button4ActionPerformed
-
+//private String selectedImagePath = "";
+//private byte[] getImageBytes(String imagePath) throws IOException {
+//        File imageFile = new File(imagePath);
+//        BufferedImage bufferedImage = ImageIO.read(imageFile);
+//
+//        Image scaledImage = bufferedImage.getScaledInstance(426, 240, Image.SCALE_SMOOTH);
+//        BufferedImage scaledBufferedImage = new BufferedImage(426, 240, BufferedImage.TYPE_INT_ARGB);
+//        scaledBufferedImage.getGraphics().drawImage(scaledImage, 0, 0, null);
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        ImageIO.write(scaledBufferedImage, "png", baos);
+//        return baos.toByteArray();
+//    }
     private void imageFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageFileChooserActionPerformed
-        // TODO add your handling code here:
+//        // TODO add your handling code here:
         uploadImage();
+
+
     }//GEN-LAST:event_imageFileChooserActionPerformed
 
     private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
@@ -869,15 +933,17 @@ public class Admin extends javax.swing.JFrame {
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) adminTable.getModel();
 int selectIndex = adminTable.getSelectedRow();
-recipeId.setText(model.getValueAt(selectIndex, 1).toString());
-nameData1.setText(model.getValueAt(selectIndex, 2).toString());
-typeData1.setSelectedItem(model.getValueAt(selectIndex, 3).toString());
-levelData1.setSelectedItem(model.getValueAt(selectIndex, 4).toString());
-firstData1.setText(model.getValueAt(selectIndex, 5).toString());
-secondData1.setText(model.getValueAt(selectIndex, 6).toString());
-thirdData1.setText(model.getValueAt(selectIndex, 7).toString());
-fourthData1.setText(model.getValueAt(selectIndex, 8).toString());
 ImageIcon imageIcon = (ImageIcon) model.getValueAt(selectIndex, 0);
+
+nameData1.setText(model.getValueAt(selectIndex, 1).toString());
+typeData1.setSelectedItem(model.getValueAt(selectIndex, 2).toString());
+levelData1.setSelectedItem(model.getValueAt(selectIndex, 3).toString());
+firstData1.setText(model.getValueAt(selectIndex, 4).toString());
+secondData1.setText(model.getValueAt(selectIndex,5 ).toString());
+thirdData1.setText(model.getValueAt(selectIndex, 6).toString());
+fourthData1.setText(model.getValueAt(selectIndex, 7).toString());
+recipeId.setText(model.getValueAt(selectIndex, 8).toString());
+
  if (imageIcon != null) {
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(250,250 , Image.SCALE_SMOOTH);
@@ -889,6 +955,11 @@ ImageIcon imageIcon = (ImageIcon) model.getValueAt(selectIndex, 0);
     
     jTabbedPane1.setSelectedIndex(4);
     }//GEN-LAST:event_adminTableMouseClicked
+
+    private void refreshBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtn1ActionPerformed
+        // TODO add your handling code here:
+        populateTable(adminTable);
+    }//GEN-LAST:event_refreshBtn1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -961,6 +1032,7 @@ ImageIcon imageIcon = (ImageIcon) model.getValueAt(selectIndex, 0);
     private components.PictureBox pictureBox1;
     private components.PictureBox pictureBox2;
     private javax.swing.JLabel recipeId;
+    private Swing.ActionButton refreshBtn1;
     private javax.swing.JTextPane secondData;
     private javax.swing.JTextPane secondData1;
     private Swing.Button showDishBtn;

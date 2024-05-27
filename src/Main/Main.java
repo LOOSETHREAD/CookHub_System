@@ -44,7 +44,7 @@ public class Main extends javax.swing.JFrame {
         controller = new DatabaseController(mainTableModel);
         notification = new Notification(new DefaultTableModel()); // Create a new instance of the Notification class
         notification.controller = this.controller;
-        populateTable("SELECT * FROM dishtable", mainTable);
+        populateTable( mainTable);
         TableColumnModel columnModel = mainTable.getColumnModel();
         int imageColumnIndex = 0; 
         columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
@@ -119,7 +119,7 @@ public class Main extends javax.swing.JFrame {
             protected Void doInBackground() throws Exception {
                 DefaultTableModel tableModel = (DefaultTableModel) mainTable.getModel();
                 tableModel.setRowCount(0);
-                populateTable("SELECT * FROM dishtable", mainTable);
+                populateTable( mainTable);
                 return null;
             }
 
@@ -149,7 +149,6 @@ public class Main extends javax.swing.JFrame {
         refreshBtn = new Swing.ActionButton();
         filterBtn = new Swing.ActionButton();
         categoryBox = new Swing.ComboBoxSuggestion();
-        difficultyBox = new Swing.ComboBoxSuggestion();
         jPanel2 = new javax.swing.JPanel();
         dishCover = new components.PictureBox();
         jLabel3 = new javax.swing.JLabel();
@@ -169,6 +168,14 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                formWindowLostFocus(evt);
+            }
+        });
 
         jLayeredPane1.setBackground(new java.awt.Color(255, 255, 255));
         jLayeredPane1.setOpaque(true);
@@ -180,7 +187,7 @@ public class Main extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(1280, 709));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        Search.setText("Search Dish or Ingredient");
+        Search.setText("Search Dish");
         Search.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 SearchFocusGained(evt);
@@ -221,19 +228,12 @@ public class Main extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Image", "No.", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost"
+                "Image", "Name", "Type", "Level", "Description", "Ingredients", "Procedures", "Cost", "No."
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, true
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -252,23 +252,24 @@ public class Main extends javax.swing.JFrame {
             mainTable.getColumnModel().getColumn(0).setMinWidth(200);
             mainTable.getColumnModel().getColumn(0).setPreferredWidth(200);
             mainTable.getColumnModel().getColumn(0).setMaxWidth(200);
-            mainTable.getColumnModel().getColumn(1).setMinWidth(0);
-            mainTable.getColumnModel().getColumn(1).setMaxWidth(0);
-            mainTable.getColumnModel().getColumn(2).setMinWidth(100);
-            mainTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-            mainTable.getColumnModel().getColumn(2).setMaxWidth(100);
+            mainTable.getColumnModel().getColumn(1).setMinWidth(100);
+            mainTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+            mainTable.getColumnModel().getColumn(1).setMaxWidth(100);
+            mainTable.getColumnModel().getColumn(2).setMinWidth(0);
+            mainTable.getColumnModel().getColumn(2).setPreferredWidth(0);
+            mainTable.getColumnModel().getColumn(2).setMaxWidth(0);
             mainTable.getColumnModel().getColumn(3).setMinWidth(0);
             mainTable.getColumnModel().getColumn(3).setPreferredWidth(0);
             mainTable.getColumnModel().getColumn(3).setMaxWidth(0);
-            mainTable.getColumnModel().getColumn(4).setMinWidth(0);
-            mainTable.getColumnModel().getColumn(4).setPreferredWidth(0);
-            mainTable.getColumnModel().getColumn(4).setMaxWidth(0);
-            mainTable.getColumnModel().getColumn(5).setResizable(false);
+            mainTable.getColumnModel().getColumn(4).setResizable(false);
+            mainTable.getColumnModel().getColumn(5).setMinWidth(0);
+            mainTable.getColumnModel().getColumn(5).setMaxWidth(0);
             mainTable.getColumnModel().getColumn(6).setMinWidth(0);
             mainTable.getColumnModel().getColumn(6).setMaxWidth(0);
             mainTable.getColumnModel().getColumn(7).setMinWidth(0);
             mainTable.getColumnModel().getColumn(7).setMaxWidth(0);
             mainTable.getColumnModel().getColumn(8).setMinWidth(0);
+            mainTable.getColumnModel().getColumn(8).setPreferredWidth(0);
             mainTable.getColumnModel().getColumn(8).setMaxWidth(0);
         }
 
@@ -278,12 +279,12 @@ public class Main extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Swis721 Ex BT", 1, 48)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(105, 26, 0));
         jLabel5.setText("WELCOME ,");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 230, -1, 50));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 230, -1, 50));
 
         userName1.setFont(new java.awt.Font("Swis721 Ex BT", 1, 48)); // NOI18N
         userName1.setForeground(new java.awt.Color(105, 26, 0));
         userName1.setText("Username");
-        jPanel1.add(userName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 230, 380, 50));
+        jPanel1.add(userName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 230, 380, 50));
 
         pictureBox2.setBackground(new java.awt.Color(255, 255, 255));
         pictureBox2.setImage(new javax.swing.ImageIcon(getClass().getResource("/Image/CookHubLogo.png"))); // NOI18N
@@ -334,7 +335,7 @@ public class Main extends javax.swing.JFrame {
                 filterBtnActionPerformed(evt);
             }
         });
-        jPanel1.add(filterBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 310, 30, 30));
+        jPanel1.add(filterBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 310, 30, 30));
 
         categoryBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Snack/Dessert", "Breakfast/Lunch", "Breakfast/Dinner", "Lunch/Dinner", "Breakfast/Lunch/Dinner" }));
         categoryBox.setSelectedIndex(-1);
@@ -343,21 +344,12 @@ public class Main extends javax.swing.JFrame {
                 categoryBoxMouseClicked(evt);
             }
         });
-        jPanel1.add(categoryBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 310, -1, 30));
-
-        difficultyBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Easy", "Medium", "Hard" }));
-        difficultyBox.setSelectedIndex(-1);
-        difficultyBox.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                difficultyBoxMouseClicked(evt);
-            }
-        });
-        difficultyBox.addActionListener(new java.awt.event.ActionListener() {
+        categoryBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                difficultyBoxActionPerformed(evt);
+                categoryBoxActionPerformed(evt);
             }
         });
-        jPanel1.add(difficultyBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 310, 120, 30));
+        jPanel1.add(categoryBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 310, -1, 30));
 
         jTabbedPane1.addTab("tab1", jPanel1);
 
@@ -566,17 +558,18 @@ public class Main extends javax.swing.JFrame {
 
     private void SearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyTyped
         // TODO add your handling code here:
-        controller.searchField(Search.getText(), mainTable);
+//        controller.searchField(Search.getText(), mainTable);
     }//GEN-LAST:event_SearchKeyTyped
 
     private void SearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyReleased
         //         TODO add your handling code here:
-        
     }//GEN-LAST:event_SearchKeyReleased
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
         // TODO add your handling code here:
-        
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            controller.searchField(Search.getText(), mainTable);
+        }
     }//GEN-LAST:event_SearchKeyPressed
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
@@ -593,14 +586,14 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(Search.getText().equals(""))
         {
-            Search.setText("Search Dish or Ingredient");
+            Search.setText("Search Dish");
         }
         Search.setForeground(new Color(153,153,153));
     }//GEN-LAST:event_SearchFocusLost
 
     private void SearchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_SearchFocusGained
         // TODO add your handling code here:
-        if(Search.getText().equals("Search Dish or Ingredient")){
+        if(Search.getText().equals("Search Dish")){
             Search.setText("");
         }
         Search.setForeground(new Color(153,153,153));
@@ -609,7 +602,6 @@ public class Main extends javax.swing.JFrame {
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         // TODO add your handling code here:
         controller.filterField((String) categoryBox.getSelectedItem(), mainTable);
-        controller.filterField((String) difficultyBox.getSelectedItem(), mainTable);
     }//GEN-LAST:event_filterBtnActionPerformed
 
     private void refreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtnActionPerformed
@@ -617,19 +609,22 @@ public class Main extends javax.swing.JFrame {
         refreshMainTable();
     }//GEN-LAST:event_refreshBtnActionPerformed
 
-    private void difficultyBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_difficultyBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_difficultyBoxActionPerformed
-
     private void categoryBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_categoryBoxMouseClicked
         // TODO add your handling code here:
         setTextFieldEmpty();
     }//GEN-LAST:event_categoryBoxMouseClicked
 
-    private void difficultyBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_difficultyBoxMouseClicked
+    private void categoryBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryBoxActionPerformed
         // TODO add your handling code here:
-        setTextFieldEmpty();
-    }//GEN-LAST:event_difficultyBoxMouseClicked
+    }//GEN-LAST:event_categoryBoxActionPerformed
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowLostFocus
 
     /**
      * @param args the command line arguments
@@ -671,7 +666,6 @@ public class Main extends javax.swing.JFrame {
     private Swing.Button button2;
     private Swing.Button button4;
     private Swing.ComboBoxSuggestion categoryBox;
-    private Swing.ComboBoxSuggestion difficultyBox;
     private javax.swing.JTextPane dishCost;
     private components.PictureBox dishCover;
     private javax.swing.JTextPane dishDescription;

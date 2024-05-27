@@ -101,7 +101,7 @@ public class datamodel {
         this.dishProcedures = dishProcedures;
     }
     
-    public datamodel(String name, String dishType, String dishLevel, String dishDescription, String dishIngredients, String dishProcedures, String dishCost, Icon dishCover) {
+    public datamodel(Icon dishCover, String name, String dishType, String dishLevel, String dishDescription, String dishIngredients, String dishProcedures, String dishCost) {
         this.name = name;
         this.dishDescription = dishDescription;
         this.dishIngredients = dishIngredients;

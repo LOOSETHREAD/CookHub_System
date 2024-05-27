@@ -30,9 +30,10 @@ public class DatabaseController {
             @Override
             protected Void doInBackground() throws IOException {
                 try {
+                    byte[] imgDish = convertImageIconToByteArray(addData.getDishCover());
                     String sql = "INSERT INTO dishtable (Image, Name, Type, Level, Description, Ingredients, Procedures, Cost) VALUES (?,?,?,?,?,?,?,?)";
                     p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
-                    p.setBytes(1, convertImageIconToByteArray(addData.getDishCover()));
+                    p.setBytes(1, imgDish);
                     p.setString(2, addData.getName());
                     p.setString(3, addData.getDishType());
                     p.setString(4, addData.getDishLevel());
@@ -42,9 +43,12 @@ public class DatabaseController {
                     p.setString(8, addData.getDishCost());
 
                     int rowsAffected = p.executeUpdate();
-                    if (rowsAffected > 0) {
-                        Object[] rowData = {addData.getName(), addData.getDishType(), addData.getDishLevel(), addData.getDishDescription(), addData.getDishIngredients(), addData.getDishProcedures(), addData.getDishCost()};
-                        SwingUtilities.invokeLater(() -> tableModel.addRow(rowData));
+                    if (rowsAffected >= 0) {
+                        ImageIcon icon = new ImageIcon(imgDish);
+
+//                        Object[] rowData = {imgDish, addData.getName(),addData.getDishType() ,  addData.getDishLevel(),  addData.getDishDescription(), addData.getDishIngredients(), addData.getDishProcedures(),addData.getDishCost()};
+//                    SwingUtilities.invokeLater(() -> tableModel.addRow(rowData));
+                   
                         JOptionPane.showMessageDialog(null, "Data added successfully.");
                     } else {
                         JOptionPane.showMessageDialog(null, "Failed to add data.");
@@ -194,17 +198,16 @@ public class DatabaseController {
         worker.execute();
     }
 
-    public void searchField(String Search, JTable mainTable) {
+    public void searchField(String Search, JTable table) {
     SwingWorker<Void, Void> worker = new SwingWorker<>() {
         @Override
         protected Void doInBackground() {
             try {
-                DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
                 model.setRowCount(0);
-                String sql = "SELECT * FROM dishtable WHERE Name LIKE ? OR Ingredients LIKE ?";
+                String sql = "SELECT * FROM dishtable WHERE Name LIKE ?";
                 p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
                 p.setString(1, "%" + Search.trim() + "%");
-                p.setString(2, "%" + Search.trim() + "%");
                 ResultSet rs = p.executeQuery();
                 while (rs.next()) {
                     Vector<Object> v = new Vector<>();
@@ -216,7 +219,6 @@ public class DatabaseController {
                         
                         v.add(null);
                     }
-                    v.add(rs.getString("No."));
                     v.add(rs.getString("Name"));
                     v.add(rs.getString("Type"));
                     v.add(rs.getString("Level"));
@@ -224,6 +226,7 @@ public class DatabaseController {
                     v.add(rs.getString("Ingredients"));
                     v.add(rs.getString("Procedures"));
                     v.add(rs.getString("Cost"));
+                    v.add(rs.getString("No."));
 
                     SwingUtilities.invokeLater(() -> model.addRow(v));
                 }
@@ -235,17 +238,16 @@ public class DatabaseController {
     };
     worker.execute();
 }
-     public void filterField(String Search, JTable mainTable) {
+     public void filterField(String Search, JTable table) {
     SwingWorker<Void, Void> worker = new SwingWorker<>() {
         @Override
         protected Void doInBackground() {
             try {
-                DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
                 model.setRowCount(0);
-                String sql = "SELECT * FROM dishtable WHERE Type LIKE ? OR Level LIKE ?";
+                String sql = "SELECT * FROM dishtable WHERE Type LIKE ?";
                 p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
                 p.setString(1, "%" + Search.trim() + "%");
-                p.setString(2, "%" + Search.trim() + "%");
                 ResultSet rs = p.executeQuery();
                 while (rs.next()) {
                     Vector<Object> v = new Vector<>();
@@ -257,7 +259,6 @@ public class DatabaseController {
                         
                         v.add(null);
                     }
-                    v.add(rs.getString("No."));
                     v.add(rs.getString("Name"));
                     v.add(rs.getString("Type"));
                     v.add(rs.getString("Level"));
@@ -265,6 +266,7 @@ public class DatabaseController {
                     v.add(rs.getString("Ingredients"));
                     v.add(rs.getString("Procedures"));
                     v.add(rs.getString("Cost"));
+                    v.add(rs.getString("No."));
 
                     SwingUtilities.invokeLater(() -> model.addRow(v));
                 }
