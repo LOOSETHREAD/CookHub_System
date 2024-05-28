@@ -103,36 +103,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                 }
                             }
         });
-        txtPass.addKeyListener(new KeyListener() {
-            
-            @Override
-            public void keyPressed(KeyEvent evt) {
-                if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-                    if (txtUsers.getText().equals("") || txtEmail.getText().equals("") || txtPass.getPassword().equals("")) {
-                 showMessage(Message.MessageType.ERROR, "Please Fill out Empty Fields!");
-                } else {
-                    String userName = txtUsers.getText();
-                    char[] password = txtPass.getPassword();
-                    String email = txtEmail.getText();
-                    user = new ModelUser(userName, email, password);
-                    userController controller = new userController();
-                    try {
-                        controller.registerUser(user);
-                        
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    showMessage(Message.MessageType.SUCCESS, "User Added");
-                }
-        }
-                }
-            @Override
-            public void keyTyped(KeyEvent e) {
-                }
-            @Override
-            public void keyReleased(KeyEvent e) {
-               }
-        });
+        
         cmdShowPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,59 +183,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                  }
             
         });
-        txtPass.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                String userName = txtUsers.getText();
-                    char[] password = txtPass.getPassword();
-
-                    if (userName.equals("") || password.length == 0) {
-                        showMessage(Message.MessageType.ERROR, "Please Fill out Empty Fields!");
-                    } else {
-                        ModelUser loginUser = new ModelUser(userName, "", password);
-                        userController controller = new userController();
-                        ModelUser loggedInUser = controller.LogIn(loginUser);
-
-                        if (loggedInUser != null) {
-                            try {
-                                boolean isAdmin = controller.isAdmin(loggedInUser);
-                                if (isAdmin) {
-                                    Component topLevelContainer = PanelLoginAndRegister.this.getTopLevelAncestor();
-                                    if (topLevelContainer instanceof JFrame) {
-                                        ((JFrame) topLevelContainer).setVisible(false);
-                                    }
-                                    Admin adminInterface = new Admin();
-                                    adminInterface.setVisible(true);
-                                } else {
-                                    Component topLevelContainer = PanelLoginAndRegister.this.getTopLevelAncestor();
-                                    if (topLevelContainer instanceof JFrame) {
-                                        ((JFrame) topLevelContainer).setVisible(false);
-                                    }
-                                    Main main = new Main();
-                                  String usernameData =  loggedInUser.getUserName();
-                                  main.userName1.setText(usernameData);
-                                    main.setVisible(true);
-                                }
-                            } catch (ClassNotFoundException ex) {
-                                Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } else {
-                            showMessage(Message.MessageType.ERROR, "Incorrect User or Password");
-                        }
-                    }
-
-                }
-                }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                }
-        });
+        
          cmdShowPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -30,6 +30,7 @@ import javax.swing.table.TableColumnModel;
 import Message.Message;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -107,7 +108,7 @@ public class Admin extends javax.swing.JFrame {
             imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
             datamodel newdata = new datamodel(new ImageIcon(imageBytes),nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText());
             controller.addDataToDatabase(newdata);
-            
+            populateTable(adminTable);
             setTextFieldEmpty();
         } catch (IOException ex) {
             handleException("Error adding data to database", ex);
@@ -130,7 +131,7 @@ public class Admin extends javax.swing.JFrame {
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
         datamodel newdata = new datamodel(new ImageIcon(imageBytes),nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText());
         controller.deleteDataToDatabase(newdata);
-        
+        populateTable(adminTable);
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
     }
@@ -142,7 +143,7 @@ public class Admin extends javax.swing.JFrame {
         imageBytes = convertImageIconToByteArray((ImageIcon) picIcon);
         datamodel newdata = new datamodel(new ImageIcon(imageBytes),nameData1.getText(), (String) typeData1.getSelectedItem(), (String) levelData1.getSelectedItem(), firstData1.getText(), secondData1.getText(), thirdData1.getText(), fourthData1.getText());
         controller.updateDataToDatabase(newdata, idData);
-        
+        populateTable(adminTable);
         setTextFieldEmpty();
         convertImageIconToByteArray((ImageIcon) picIcon);
     }
@@ -213,6 +214,9 @@ public class Admin extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         adminTable = new javax.swing.JTable();
         refreshBtn1 = new Swing.ActionButton();
+        searchAdmin = new Swing.MyTextField();
+        categoryBox1 = new Swing.ComboBoxSuggestion();
+        jLabel16 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         dishCover = new components.PictureBox();
         imageFileChooser = new javax.swing.JButton();
@@ -370,7 +374,6 @@ public class Admin extends javax.swing.JFrame {
             adminTable.getColumnModel().getColumn(0).setMinWidth(200);
             adminTable.getColumnModel().getColumn(0).setPreferredWidth(200);
             adminTable.getColumnModel().getColumn(0).setMaxWidth(200);
-            adminTable.getColumnModel().getColumn(0).setCellRenderer(null);
             adminTable.getColumnModel().getColumn(1).setMinWidth(100);
             adminTable.getColumnModel().getColumn(1).setPreferredWidth(100);
             adminTable.getColumnModel().getColumn(1).setMaxWidth(100);
@@ -401,25 +404,87 @@ public class Admin extends javax.swing.JFrame {
             }
         });
 
+        searchAdmin.setText("Search");
+        searchAdmin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                searchAdminFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                searchAdminFocusLost(evt);
+            }
+        });
+        searchAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchAdminMouseClicked(evt);
+            }
+        });
+        searchAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchAdminActionPerformed(evt);
+            }
+        });
+        searchAdmin.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchAdminKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchAdminKeyReleased(evt);
+            }
+        });
+
+        categoryBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Snack/Dessert", "Breakfast/Lunch", "Breakfast/Dinner", "Lunch/Dinner", "Breakfast/Lunch/Dinner" }));
+        categoryBox1.setSelectedIndex(-1);
+        categoryBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                categoryBox1MouseClicked(evt);
+            }
+        });
+        categoryBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categoryBox1ActionPerformed(evt);
+            }
+        });
+        categoryBox1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                categoryBox1KeyPressed(evt);
+            }
+        });
+
+        jLabel16.setText("Category");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(searchAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(categoryBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(refreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(9, 9, 9)))))
                 .addContainerGap(181, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(refreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel16)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(searchAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(categoryBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(285, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(272, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab2", jPanel2);
@@ -826,10 +891,7 @@ public class Admin extends javax.swing.JFrame {
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
         // TODO add your handling code here:
         addDataBtn();
-       
        jTabbedPane1.setSelectedIndex(1);
-       populateTable(adminTable);
-      
     }//GEN-LAST:event_button2ActionPerformed
 
     private void firstDataFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_firstDataFocusGained
@@ -843,7 +905,6 @@ public class Admin extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        populateTable(adminTable);
          jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button3ActionPerformed
 
@@ -854,22 +915,9 @@ public class Admin extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        populateTable(adminTable);
          jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_button4ActionPerformed
-//private String selectedImagePath = "";
-//private byte[] getImageBytes(String imagePath) throws IOException {
-//        File imageFile = new File(imagePath);
-//        BufferedImage bufferedImage = ImageIO.read(imageFile);
-//
-//        Image scaledImage = bufferedImage.getScaledInstance(426, 240, Image.SCALE_SMOOTH);
-//        BufferedImage scaledBufferedImage = new BufferedImage(426, 240, BufferedImage.TYPE_INT_ARGB);
-//        scaledBufferedImage.getGraphics().drawImage(scaledImage, 0, 0, null);
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        ImageIO.write(scaledBufferedImage, "png", baos);
-//        return baos.toByteArray();
-//    }
+
     private void imageFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageFileChooserActionPerformed
 //        // TODO add your handling code here:
         uploadImage();
@@ -957,9 +1005,58 @@ recipeId.setText(model.getValueAt(selectIndex, 8).toString());
     }//GEN-LAST:event_adminTableMouseClicked
 
     private void refreshBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtn1ActionPerformed
-        // TODO add your handling code here:
+          // TODO add your handling code here:
         populateTable(adminTable);
     }//GEN-LAST:event_refreshBtn1ActionPerformed
+
+    private void searchAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchAdminMouseClicked
+        // TODO add your handling code here:
+        setTextFieldEmpty();
+    }//GEN-LAST:event_searchAdminMouseClicked
+
+    private void searchAdminFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchAdminFocusGained
+        // TODO add your handling code here:
+        if(searchAdmin.getText().equals("Search")){
+            searchAdmin.setText("");
+        }
+        searchAdmin.setForeground(new Color(153,153,153));
+    }//GEN-LAST:event_searchAdminFocusGained
+
+    private void searchAdminFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchAdminFocusLost
+        // TODO add your handling code here:
+        if(searchAdmin.getText().equals(""))
+        {
+            searchAdmin.setText("Search");
+        }
+        searchAdmin.setForeground(new Color(153,153,153));
+    }//GEN-LAST:event_searchAdminFocusLost
+
+    private void categoryBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryBox1ActionPerformed
+        // TODO add your handling code here:
+        controller.filterField((String) categoryBox1.getSelectedItem(), adminTable);
+    }//GEN-LAST:event_categoryBox1ActionPerformed
+
+    private void searchAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchAdminActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchAdminActionPerformed
+
+    private void searchAdminKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchAdminKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchAdminKeyPressed
+
+    private void categoryBox1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_categoryBox1KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_categoryBox1KeyPressed
+
+    private void categoryBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_categoryBox1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_categoryBox1MouseClicked
+
+    private void searchAdminKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchAdminKeyReleased
+        // TODO add your handling code here:
+        
+            controller.searchField(searchAdmin.getText(), adminTable);
+    }//GEN-LAST:event_searchAdminKeyReleased
 
     /**
      * @param args the command line arguments
@@ -984,6 +1081,7 @@ recipeId.setText(model.getValueAt(selectIndex, 8).toString());
     private Swing.Button button4;
     private Swing.Button button5;
     private Swing.Button button6;
+    private Swing.ComboBoxSuggestion categoryBox1;
     private Swing.Button cmd;
     private components.PictureBox dishCover;
     private components.PictureBox dishCover1;
@@ -1000,6 +1098,7 @@ recipeId.setText(model.getValueAt(selectIndex, 8).toString());
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1033,6 +1132,7 @@ recipeId.setText(model.getValueAt(selectIndex, 8).toString());
     private components.PictureBox pictureBox2;
     private javax.swing.JLabel recipeId;
     private Swing.ActionButton refreshBtn1;
+    private Swing.MyTextField searchAdmin;
     private javax.swing.JTextPane secondData;
     private javax.swing.JTextPane secondData1;
     private Swing.Button showDishBtn;
