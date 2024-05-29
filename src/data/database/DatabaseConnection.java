@@ -8,16 +8,16 @@ public class DatabaseConnection {
     private static volatile DatabaseConnection instance;
     private Connection connection;
 
-//    private static final String SERVER = "192.168.133.150";
-//    private static final String PORT = "3306";
-//    private static final String DATABASE = "cookhub";
-//    private static final String USER = "cookhub";
-//    private static final String PASSWORD = "cookhub@123";
-    private static final String SERVER = "127.0.0.1";
+    private static final String SERVER = "192.168.133.150";
     private static final String PORT = "3306";
     private static final String DATABASE = "cookhub";
-    private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String USER = "cookhub";
+    private static final String PASSWORD = "cookhub@123";
+//    private static final String SERVER = "127.0.0.1";
+//    private static final String PORT = "3306";
+//    private static final String DATABASE = "cookhub";
+//    private static final String USER = "root";
+//    private static final String PASSWORD = "root";
 
     private DatabaseConnection() {
         try {

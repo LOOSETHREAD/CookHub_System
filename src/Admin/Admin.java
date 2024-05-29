@@ -7,10 +7,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import components.Notification;
 import data.controller.DatabaseController;
 import static data.controller.PopulateDishController.populateTable;
-import data.model.datamodel;
-import java.awt.Graphics2D;
-
-        
+import data.model.datamodel; 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -27,33 +24,35 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import Message.Message;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import Swing.BadgeButton;
+import data.model.modelNotification;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 public class Admin extends javax.swing.JFrame {
 
     private DatabaseController controller;
     private DefaultTableModel adminTableModel;
-   
-
+    private BadgeButton badgeButton;
+    
     public Admin() {
         initComponents();
+        getContentPane().setBackground(new Color(240, 240, 240));
         GlassPanePopup.install(this);
         recipeId.setVisible(false);
         adminTableModel = (DefaultTableModel) adminTable.getModel();
         populateTable(adminTable);
         controller = new DatabaseController(adminTableModel);
-
-        
         TableColumnModel columnModel = adminTable.getColumnModel();
-        int imageColumnIndex = 0; // Replace 0 with the actual index of your image column
+        int imageColumnIndex = 0; 
         columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
         adminTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
             @Override
@@ -73,8 +72,28 @@ public class Admin extends javax.swing.JFrame {
                 }
             }
         });
+         badgeButton = new BadgeButton();
+        
+        
+         Timer timer = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Notification(adminTableModel, cmdNotif);
+                
+            }
+        });
+        timer.start();
+    
     }
-
+    private void refreshNotification(){
+        controller.notification();
+        modelNotification count = controller.notification();
+        String countData = Integer.toString(count.getCountNotification());
+        cmdNotif.setText(countData);
+    }
+    
+     
+    
     public void setTextFieldEmpty() {
         ImageIcon icon = new ImageIcon(getClass().getResource("/Image/BlackImage.png"));
         clearTextFields();
@@ -209,7 +228,7 @@ public class Admin extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         pictureBox1 = new components.PictureBox();
-        cmd = new Swing.Button();
+        cmdNotif = new Swing.BadgeButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         adminTable = new javax.swing.JTable();
@@ -298,11 +317,10 @@ public class Admin extends javax.swing.JFrame {
 
         pictureBox1.setImage(new javax.swing.ImageIcon(getClass().getResource("/Image/CookHubLogo.png"))); // NOI18N
 
-        cmd.setBackground(new java.awt.Color(228, 228, 252));
-        cmd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/notif.png"))); // NOI18N
-        cmd.addActionListener(new java.awt.event.ActionListener() {
+        cmdNotif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/notif.png"))); // NOI18N
+        cmdNotif.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdActionPerformed(evt);
+                cmdNotifActionPerformed(evt);
             }
         });
 
@@ -311,16 +329,16 @@ public class Admin extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(17, 17, 17)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(107, 107, 107)
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 250, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(64, 64, 64)
-                        .addComponent(cmd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 196, Short.MAX_VALUE))
+                        .addGap(33, 33, 33)
+                        .addComponent(cmdNotif, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(241, 241, 241))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,7 +346,7 @@ public class Admin extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmdNotif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel15)
                 .addContainerGap(520, Short.MAX_VALUE))
@@ -613,6 +631,11 @@ public class Admin extends javax.swing.JFrame {
 
         jLabel5.setText("Cost");
 
+        fourthData.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                fourthDataKeyTyped(evt);
+            }
+        });
         jScrollPane2.setViewportView(fourthData);
 
         button6.setBackground(new java.awt.Color(255, 230, 204));
@@ -703,6 +726,11 @@ public class Admin extends javax.swing.JFrame {
 
         jLabel14.setText("Cost");
 
+        fourthData1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                fourthData1KeyTyped(evt);
+            }
+        });
         jScrollPane10.setViewportView(fourthData1);
 
         button2.setBackground(new java.awt.Color(255, 230, 204));
@@ -969,14 +997,6 @@ public class Admin extends javax.swing.JFrame {
         jTabbedPane1.setSelectedIndex(4);
     }//GEN-LAST:event_button6ActionPerformed
 
-    private void cmdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel tableModel = new DefaultTableModel();
-        GlassPanePopup.showPopup(new Notification(tableModel){
-
-        });
-    }//GEN-LAST:event_cmdActionPerformed
-
     private void adminTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminTableMouseClicked
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) adminTable.getModel();
@@ -1058,6 +1078,26 @@ recipeId.setText(model.getValueAt(selectIndex, 8).toString());
             controller.searchField(searchAdmin.getText(), adminTable);
     }//GEN-LAST:event_searchAdminKeyReleased
 
+    private void cmdNotifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdNotifActionPerformed
+        GlassPanePopup.showPopup(new Notification(adminTableModel, cmdNotif){
+        });
+        
+    }//GEN-LAST:event_cmdNotifActionPerformed
+
+    private void fourthDataKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fourthDataKeyTyped
+        char a = evt.getKeyChar();
+        if (!Character.isDigit(a)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_fourthDataKeyTyped
+
+    private void fourthData1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fourthData1KeyTyped
+       char a = evt.getKeyChar();
+        if (!Character.isDigit(a)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_fourthData1KeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -1082,7 +1122,7 @@ recipeId.setText(model.getValueAt(selectIndex, 8).toString());
     private Swing.Button button5;
     private Swing.Button button6;
     private Swing.ComboBoxSuggestion categoryBox1;
-    private Swing.Button cmd;
+    private Swing.BadgeButton cmdNotif;
     private components.PictureBox dishCover;
     private components.PictureBox dishCover1;
     private javax.swing.JTextPane firstData;

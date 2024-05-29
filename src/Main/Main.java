@@ -29,6 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import Swing.BadgeButton;
 
 public class Main extends javax.swing.JFrame {
     private final DatabaseController controller;
@@ -36,20 +37,21 @@ public class Main extends javax.swing.JFrame {
     private ActionListener event;
     private DefaultTableModel mainTableModel;
      private Notification notification;
+     private BadgeButton badgeButton;
     
     private TableRowSorter<DefaultTableModel> sorter;
     public Main() {
         initComponents();
         mainTableModel = (DefaultTableModel) mainTable.getModel();
         controller = new DatabaseController(mainTableModel);
-        notification = new Notification(new DefaultTableModel()); // Create a new instance of the Notification class
+        badgeButton = new BadgeButton();
+        notification = new Notification(new DefaultTableModel(), badgeButton);
         notification.controller = this.controller;
         populateTable( mainTable);
         TableColumnModel columnModel = mainTable.getColumnModel();
         int imageColumnIndex = 0; 
         columnModel.getColumn(imageColumnIndex).setCellRenderer(new ImageIconTableCellRenderer());
         jLayeredPane1.setFocusable(true);
-        mainTable.setRowSorter(sorter);
         mainTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -90,6 +92,7 @@ public class Main extends javax.swing.JFrame {
          notification.requestDishToDatabase(newdata);
          
      }
+       
        public void ExistingUserRequest(){
         
         try {
@@ -275,7 +278,7 @@ public class Main extends javax.swing.JFrame {
             mainTable.getColumnModel().getColumn(8).setMaxWidth(0);
         }
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 1190, 360));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 1170, 360));
 
         jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Swis721 Ex BT", 1, 48)); // NOI18N
@@ -423,13 +426,13 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(dishCover, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(dishName, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(dishName, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -438,7 +441,7 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(dishName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(pictureBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))

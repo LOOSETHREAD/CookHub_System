@@ -144,7 +144,7 @@
                       </AuxValues>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                          <AbsoluteConstraints x="10" y="350" width="1190" height="360"/>
+                          <AbsoluteConstraints x="20" y="350" width="1170" height="360"/>
                         </Constraint>
                       </Constraints>
 
@@ -425,16 +425,16 @@
                                   <Component id="dishCover" min="-2" pref="328" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="70" max="-2" attributes="0"/>
-                                      <Component id="dishName" min="-2" pref="281" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
                                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jLabel3" min="-2" pref="101" max="-2" attributes="0"/>
                                           <Component id="jScrollPane2" min="-2" pref="732" max="-2" attributes="0"/>
                                       </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                                      <Component id="dishName" min="-2" pref="281" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -447,7 +447,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
                                       <Component id="dishName" min="-2" pref="40" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="pictureBox1" min="-2" pref="201" max="-2" attributes="0"/>
                                           <Component id="jScrollPane6" min="-2" pref="245" max="-2" attributes="0"/>

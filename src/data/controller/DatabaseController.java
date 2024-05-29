@@ -3,6 +3,7 @@ package data.controller;
 import com.mysql.cj.jdbc.Blob;
 import data.database.DatabaseConnection;
 import data.model.datamodel;
+import data.model.modelNotification;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -165,9 +166,9 @@ public class DatabaseController {
                     String sql = "DELETE FROM requestform WHERE Request = ?";
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
                     p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
-
                     String request = model.getValueAt(row, 0).toString();
                     p.setString(1, request);
+                    
                     int rowsAffected = p.executeUpdate();
 
                     if (rowsAffected > 0) {
@@ -196,6 +197,19 @@ public class DatabaseController {
             }
         };
         worker.execute();
+    }
+    public modelNotification notification(){
+        modelNotification count = new modelNotification();
+        try {
+            String sql = "SELECT COUNT(*) AS TotalCount FROM requestform";
+            ResultSet rs = p.executeQuery();
+            if(rs.next()){
+                count.setCountNotification(rs.getInt("TotalCount"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     public void searchField(String Search, JTable table) {
@@ -292,4 +306,6 @@ private static ImageIcon blobToImageIcon(Blob blob, int width, int height) throw
     }
     return null;
 }
+
+
 }

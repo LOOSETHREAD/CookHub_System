@@ -130,20 +130,20 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
-                                      <Component id="pictureBox1" min="-2" pref="531" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
-                                      <Component id="cmd" min="-2" pref="42" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
                                       <Component id="jLabel15" min="-2" pref="673" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="250" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="pictureBox1" min="-2" pref="531" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                                      <Component id="cmdNotif" min="-2" pref="55" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="241" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="196" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -153,7 +153,7 @@
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="pictureBox1" min="-2" pref="264" max="-2" attributes="0"/>
-                                  <Component id="cmd" min="-2" pref="40" max="-2" attributes="0"/>
+                                  <Component id="cmdNotif" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
@@ -186,17 +186,14 @@
                         <Property name="useNullLayout" type="boolean" value="true"/>
                       </Layout>
                     </Container>
-                    <Component class="Swing.Button" name="cmd">
+                    <Component class="Swing.BadgeButton" name="cmdNotif">
                       <Properties>
-                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="fc" green="e4" red="e4" type="rgb"/>
-                        </Property>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Image/notif.png"/>
                         </Property>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdNotifActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -708,6 +705,9 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JTextPane" name="fourthData">
+                          <Events>
+                            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fourthDataKeyTyped"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -947,6 +947,9 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JTextPane" name="fourthData1">
+                          <Events>
+                            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fourthData1KeyTyped"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

@@ -12,6 +12,7 @@ public class PanelAction extends javax.swing.JPanel {
 
     public PanelAction() {
         initComponents();
+        
     }
     public void initEvent(TableActionEvent event, int row){
         cmdDelete.addActionListener(new ActionListener() {
@@ -30,6 +31,11 @@ public class PanelAction extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
 
         cmdDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/delete button.png"))); // NOI18N
+        cmdDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cmdDeleteMouseClicked(evt);
+            }
+        });
         cmdDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdDeleteActionPerformed(evt);
@@ -57,6 +63,10 @@ public class PanelAction extends javax.swing.JPanel {
     private void cmdDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdDeleteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmdDeleteActionPerformed
+
+    private void cmdDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmdDeleteMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmdDeleteMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,9 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package components;
 
+import Swing.BadgeButton;
+import Swing.GlassPanePopup;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -28,24 +27,40 @@ public class Notification extends javax.swing.JPanel {
     DefaultTableModel requestTableModel;
     private PreparedStatement p;
     public DatabaseController controller;
-    public Notification(DefaultTableModel tableModel) {
+    private BadgeButton cmdNotif;
+    
+    
+    public Notification(DefaultTableModel tableModel, BadgeButton badgeButton) {
         initComponents();
         this.requestTableModel = tableModel;
         this.controller = new DatabaseController(tableModel);
+        this.cmdNotif = badgeButton;
         populateRequestForm();
-        
+        updateBadgeButton();
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onDelete(int row) {
+        updateBadgeButton();
         controller.deleteRequestToDatabase(row,requestTable);
+        requestTable.repaint();
+        requestTable.revalidate();
+        cmdNotif.repaint();
+        cmdNotif.revalidate();
             }
         };
         requestTable.getColumnModel().getColumn(1).setCellRenderer(new TableActionCellRender());
         requestTable.getColumnModel().getColumn(1).setCellEditor(new TableActionCellEditor(event));
         setOpaque(false);
-        
     }
-
+      public void updateBadgeButton() {
+        int rowCount = requestTable.getRowCount();
+         if (rowCount > 9) {
+             cmdNotif.setText("9+");
+         } else {
+             cmdNotif.setText(String.valueOf(rowCount));
+         }
+    }
+    
      public void requestDishToDatabase(datamodel requestform){
          
         try {
@@ -58,11 +73,12 @@ public class Notification extends javax.swing.JPanel {
             if (rowsAffected > 0) {
                 Object[] rowData = {requestform.getDishRequest()};
                 requestTableModel.addRow(rowData);
+                
                 JOptionPane.showMessageDialog(null, "Data added successfully.");
             } else {
                 JOptionPane.showMessageDialog(null, "Failed to add data.");
             }
-            
+            updateBadgeButton();
         } catch (Exception e) {
             e.printStackTrace();
              JOptionPane.showMessageDialog(null, "Error adding data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -93,6 +109,7 @@ public class Notification extends javax.swing.JPanel {
                 }
                 model.addRow(v);
             }
+            updateBadgeButton();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -187,9 +204,12 @@ public class Notification extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
